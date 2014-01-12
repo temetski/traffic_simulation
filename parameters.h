@@ -13,4 +13,5 @@ int TIMESTEPS = 100; //-t
 int TRIALS = 1; //-T
 float SLOWDOWN = 0.3;
 float LANE_CHANGE_PROB = 0.8;
+float car_ratio;
 bool LANE_CHANGE = true;

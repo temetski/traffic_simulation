@@ -155,14 +155,15 @@ void printstat(vector<string> status, vector<float> densities, float car_ratio){
 
 static void show_usage(string name)
 {
-	std::cerr << "Usage: " << name << " <option(s)> VALUES\n"
+	std::cerr << "Usage: " << name << " -c CAR_RATIO [<option(s)> VALUES]\n"
 		<< "Options:\n"
 		<< "\t-h,--help\t\tShow this help message\n"
+		<< "\t-c,--carratio\t\tSpecify the car ratio\n"
 		<< "\t-T,--trials \t\tSpecify the number of trials (Default: " << TRIALS << ")\n"
 		<< "\t-R,--roadlength \tSpecify the length of the road (Default: " << ROADLENGTH << ")\n"
-		<< "\t-t,--timesteps \t\tSpecify the number of trials (Default: " << TIMESTEPS << ")\n"
-		<< "\t-r,--reallanes \t\tSpecify the number of trials (Default: " << REAL_LANES << ")\n"
-		<< "\t-v,--virtuallanes \tSpecify the number of trials (Default: " << VIRTUAL_LANES << ")\n"
+		<< "\t-t,--timesteps \t\tSpecify the number of timesteps (Default: " << TIMESTEPS << ")\n"
+		<< "\t-r,--reallanes \t\tSpecify the number of real lanes (Default: " << REAL_LANES << ")\n"
+		<< "\t-v,--virtuallanes \tSpecify the number of virtual lanes (Default: " << VIRTUAL_LANES << ")\n"
 
 		<< endl;
 }
@@ -177,6 +178,16 @@ int parser(int argc, char* argv[]){
 		if ((arg == "-h") || (arg == "--help")) {
 			show_usage(argv[0]);
 			return 0;
+		}
+		else if ((arg == "-c") || (arg == "--carratio")) {
+			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
+				i++;
+				car_ratio = atof(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+			}
+			else {
+				std::cerr << "--carratio option requires one argument." << std::endl;
+				return 1;
+			}
 		}
 		else if ((arg == "-T") || (arg == "--trials")) {
 			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
@@ -237,23 +248,23 @@ int main(int argc, char* argv[]){
 	int status = parser(argc, argv);
 	if (status == 1) return 1;
 	//vector<float> car_ratio(19);
-	//vector<float> densities(19);
-	//vector<string> status(19, "Not Done");
-	//float first = 0.05;
-	//for (int i = 0; i < 19; i++){
-	//	densities[i] = first;
-	//	car_ratio[i] = first;
-	//	first += 0.05;
+	vector<float> densities(19);
+	vector<string> runmsg(19, "Not Done");
+	float first = 0.05;
+	for (int i = 0; i < 19; i++){
+		densities[i] = first;
+		//car_ratio[i] = first;
+		first += 0.05;
+	}
+	//for (int j = 0; j < 19; j++){
+	int j = 4;
+		omp_set_num_threads(2);
+		#pragma omp parallel for
+		for (int i = 0; i < densities.size(); i++){
+			runmsg[i] = start(densities[i], car_ratio);
+			printstat(runmsg, densities, car_ratio);
+		}
 	//}
-	////for (int j = 0; j < 19; j++){
-	//int j = 4;
-	//	omp_set_num_threads(2);
-	//	#pragma omp parallel for
-	//	for (int i = 0; i < densities.size(); i++){
-	//		status[i] = start(densities[i], car_ratio[j]);
-	//		printstat(status, densities, car_ratio[j]);
-	//	}
-	////}
 	cin.get();
 	return 0;
 }
