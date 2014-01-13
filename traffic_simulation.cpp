@@ -117,7 +117,7 @@ private:
 
 void BZIP(char* _filename){
 	char message[100];
-	sprintf(message, "bzip2 -9 %s", _filename);
+	sprintf(message, "bzip2 -6 %s", _filename);
 	system(message);
 }
 
@@ -126,8 +126,8 @@ string start(float density, float car_ratio){
 	time_t start = clock();
 	vector<vector<vector<int> > > DATA;
 	//cout << "Density::" << density << "\t\tCarRatio::" << car_ratio << endl;
-	char _filename[17];
-	sprintf(_filename, "CarRatio.%.2f.h5", car_ratio);
+	char _filename[30];
+	sprintf(_filename, "CarRatio.%.2f_Density.%.2f.h5", car_ratio, density);
 	for (int trial = 1; trial < TRIALS + 1; trial++){
 		Simulation *traffic = new Simulation;
 		traffic->evolve(density, car_ratio);
