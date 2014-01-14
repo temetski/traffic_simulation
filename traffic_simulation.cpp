@@ -275,6 +275,5 @@ int main(int argc, char* argv[]){
 			printstat(runmsg, densities, car_ratio);
 		}
 	//}
-	cin.get();
 	return 0;
 }
