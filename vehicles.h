@@ -35,15 +35,15 @@ public:
 	float chance_right;
 
 	void place(road_arr& road){
-		for (int _pos = (pos - length + ROADLENGTH + 1); _pos < (pos + 1); _pos++){
+		for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _pos < (pos + 1); _pos++){
 			for (int _lane = lane; _lane < lane + width; _lane++){
 				road[_lane][_pos%ROADLENGTH] += marker;
 			}
-		}
+		}	
 	}
 
 	void remove(road_arr& road){
-		for (int _pos = (pos - length + ROADLENGTH + 1); _pos < (pos + 1); _pos++){
+		for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _pos < (pos + 1); _pos++){
 			for (int _lane = lane; _lane < lane + width; _lane++){
 				road[_lane][_pos%ROADLENGTH] -= marker;
 			}
@@ -60,7 +60,7 @@ public:
 		for (int _lane = lane; _lane < lane + width; _lane++){
 			_pos = pos + 1;
 			count = 0;
-			while (road[_lane][_pos%ROADLENGTH] == 0 && count < _distance){
+			while ((road[_lane][_pos%ROADLENGTH] == 0) && (count < _distance)){
 				_pos += 1;
 				count += 1;
 			}
