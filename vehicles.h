@@ -14,7 +14,7 @@ using namespace std;
 
 
 gsl_rng * generator = gsl_rng_alloc(gsl_rng_mt19937);
-long seed = time(NULL) * 123456789;
+time_t seed = time(NULL) * 123456789;
 
 
 /* Debugging functions are contained here */
@@ -32,7 +32,7 @@ class vehicle {
 public:
 	int vel, pos, lane, width, length, marker, size, prev_lane = lane, _distance;
 	bool changed_lane = false, exit_road = false;
-	float chance_right;
+	double chance_right;
 
 	void place(road_arr& road){
 		for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _pos < (pos + 1); _pos++){
@@ -71,7 +71,7 @@ public:
 	}
 
 	void random_slow(void){
-		float random = gsl_rng_uniform(generator);
+		double random = gsl_rng_uniform(generator);
 		if (random < SLOWDOWN && vel > 0) vel -= 1;
 	}
 
@@ -117,7 +117,7 @@ public:
 	int aveheadway(vector<int>& headwaycount){
 		int center = (headwaycount.size() - 1) / 2;
 		if (width > 1){
-			for (int i = 0; i < headwaycount.size() - 1; i++){
+			for (unsigned i = 0; i < headwaycount.size() - 1; i++){
 				headwaycount[i] = headwaycount[i] + headwaycount[i + 1];
 			}
 			center = distance(headwaycount.begin(), max_element(headwaycount.begin(), headwaycount.end()));
@@ -137,7 +137,7 @@ public:
 	void change_lane(road_arr& road){
 		vector<int> headcount;
 		int center, _where;
-		float probability;
+		double probability;
 		headcount = headway(road);
 		center = (headcount.size() - 1) / 2;
 		_where = aveheadway(headcount);

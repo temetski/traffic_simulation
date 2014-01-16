@@ -35,7 +35,7 @@ public:
 		initialize(density, car_ratio);
 		vector<int> permutation(vehicle_array.size());
 		throughput.resize(TIMESTEPS);
-		for (int i = 0; i < permutation.size(); i++) permutation[i] = i;
+		for (unsigned i = 0; i < permutation.size(); i++) permutation[i] = i;
 		random_shuffle(permutation.begin(), permutation.end());
 		for (int t = 0; t < TIMESTEPS; t++){
 			vector<vector<int> > vehicle_stats;
@@ -64,7 +64,7 @@ public:
 private:
 	void initialize(float density, float car_ratio){
 		int pos, lane, counter;
-		int motor_ratio = 1 - car_ratio;
+		float motor_ratio = 1 - car_ratio;
 		number_vehicles = density*ROADLENGTH*(REAL_LANES) /
 			(car().size*car_ratio + motorcycle().size*motor_ratio);
 		int number_car = car_ratio*number_vehicles;
@@ -256,15 +256,16 @@ int parser(int argc, char* argv[]){
 			}
 		}
 	}
+	return 0;
 }
 
 int main(int argc, char* argv[]){
 	int status = parser(argc, argv);
 	if (status == 1) return 1;
-	//vector<float> car_ratio(19);
+
 	vector<float> densities(19);
 	vector<string> runmsg(19, "Not Done");
-	float first = 0.05;
+	double first = 0.05;
 	for (int i = 0; i < 19; i++){
 		densities[i] = first;
 		first += 0.05;

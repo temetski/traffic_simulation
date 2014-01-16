@@ -19,7 +19,6 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 	int TIMESTEPS = data.size();
 	hsize_t     dims[RANK] = { TIMESTEPS, VEHICLENUM, 2 };
 	char *_data = new char[TIMESTEPS*VEHICLENUM * 2];
-	herr_t      status;
 	char _density[16];
 	char _car_ratio[16];
 	char _trial[16];
@@ -54,7 +53,7 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 	catch (FileIException error){
 		file = new H5File(FILE_NAME, H5F_ACC_TRUNC);
 	}
-
+	
 	try{
 		group1 = new Group(file->openGroup(_car_ratio));
 	}
@@ -91,7 +90,7 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 
 		// Create the dataset.     
 		DataSet *dataset = new DataSet(group2->createDataSet(DATASET_NAME, PredType::STD_I32BE, *dataspace, *plist));
-		dataset->write(_data, *datatype);
+		dataset->write(_data, PredType::STD_I8LE);
 
 		dataset->close();
 		datatype->close();
