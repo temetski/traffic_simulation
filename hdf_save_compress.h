@@ -1,5 +1,6 @@
 #ifdef _WIN32
-	#include "cpp/H5Cpp.h"
+//	#include "cpp/H5Cpp.h"
+	#include "H5Cpp.h"
 #elif __linux
 	#include "H5Cpp.h"
 #endif
@@ -92,6 +93,19 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 		DataSet *dataset = new DataSet(group2->createDataSet(DATASET_NAME, PredType::STD_I32BE, *dataspace, *plist));
 		dataset->write(_data, PredType::STD_I8LE);
 
+		DataSet s = group2->openDataSet(DATASET_NAME);
+		const H5std_string      ATTR_NAME = "Units";
+		hsize_t attdims[1] = { 2 };
+		int attr_data[2] = { 100, 200 };
+
+		DataSpace attr_dataspace = DataSpace(1, attdims);
+		Attribute attribute = dataset->createAttribute(ATTR_NAME, 
+														PredType::STD_I32BE, 
+														attr_dataspace, 
+														PropList::DEFAULT);
+		attribute.write(PredType::STD_I8LE, attr_data);
+		attribute.close();
+
 		dataset->close();
 		datatype->close();
 		dataspace->close();
@@ -130,6 +144,13 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 
 	// catch failure caused by the Group operations
 	catch (GroupIException error)
+	{
+		error.printError();
+		return -1;
+	}
+
+	// catch failure caused by the H5File operations
+	catch (AttributeIException error)
 	{
 		error.printError();
 		return -1;
