@@ -1,6 +1,6 @@
 #ifdef _WIN32
-//	#include "cpp/H5Cpp.h"
-	#include "H5Cpp.h"
+	#include "cpp/H5Cpp.h"
+//	#include "H5Cpp.h"
 #elif __linux
 	#include "H5Cpp.h"
 #endif
@@ -12,7 +12,8 @@
 
 using namespace std;
 
-int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, int trial, char* _filename)
+int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, int trial, char* _filename,
+			long seed)
 {
 #define RANK 3
 #define COMPRESSION_LEVEL 6
@@ -94,9 +95,9 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 		dataset->write(_data, PredType::STD_I8LE);
 
 		DataSet s = group2->openDataSet(DATASET_NAME);
-		const H5std_string      ATTR_NAME = "Units";
-		hsize_t attdims[1] = { 2 };
-		int attr_data[2] = { 100, 200 };
+		const H5std_string      ATTR_NAME = "RNG Seed";
+		hsize_t attdims[1] = { 1 };
+		int attr_data[1] = { seed };
 
 		DataSpace attr_dataspace = DataSpace(1, attdims);
 		Attribute attribute = dataset->createAttribute(ATTR_NAME, 

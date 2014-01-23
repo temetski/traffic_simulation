@@ -137,7 +137,7 @@ string start(float density, float car_ratio){
 		traffic->evolve(density, car_ratio);
 		DATA = traffic->vehicle_data;
 		delete traffic;
-		hd5data(DATA, density, car_ratio, trial, _filename);
+		hd5data(DATA, density, car_ratio, trial, _filename, seed);
 	}
 	BZIP(_filename);
 	char message[30];
