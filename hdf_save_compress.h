@@ -95,7 +95,7 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 		dataset->write(_data, PredType::STD_I8LE);
 
 		DataSet s = group2->openDataSet(DATASET_NAME);
-		const H5std_string      ATTR_NAME = "RNG Seed";
+		const H5std_string	ATTR_NAME = "RNG Seed";
 		hsize_t attdims[1] = { 1 };
 		int attr_data[1] = { seed };
 

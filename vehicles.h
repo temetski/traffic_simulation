@@ -12,10 +12,8 @@ using namespace std;
 #define RIGHT 1
 #define LEFT -1
 
-
 gsl_rng * generator = gsl_rng_alloc(gsl_rng_mt19937);
 time_t seed = time(NULL) * 123456789;
-
 
 /* Debugging functions are contained here */
 void print_road(road_arr& array){

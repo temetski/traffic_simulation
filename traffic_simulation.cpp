@@ -19,6 +19,8 @@
 
 using namespace std;
 
+int DATAPOINTS = 1000;
+
 struct Simulation{
 public:
 	road_arr road;
@@ -54,9 +56,12 @@ public:
 				vehicle_array[i].move(road);
 				if (vehicle_array[i].exit_road == true) passed_vehicles += 1;
 			}
-			for (vehicle vehicle : vehicle_array) vehicle_stats.push_back(vehicle.stats());
-			vehicle_data.push_back(vehicle_stats);
-			vector<vector<int> >().swap(vehicle_stats);
+			/* Eliminate the transient 2000 steps */
+			if (t >= TIMESTEPS-DATAPOINTS){
+				for (vehicle vehicle : vehicle_array) vehicle_stats.push_back(vehicle.stats());
+				vehicle_data.push_back(vehicle_stats);
+				vector<vector<int> >().swap(vehicle_stats);
+			}
 			random_shuffle(permutation.begin(), permutation.end());
 		}
 	}
@@ -126,7 +131,7 @@ void BZIP(char* _filename){
 	system(message);
 }
 
-string start(float density, float car_ratio){
+string start(float density, float car_ratio, time_t seed){
 	gsl_rng_set(generator, seed);
 	time_t start = clock();
 	vector<vector<vector<int> > > DATA;
@@ -169,6 +174,7 @@ static void show_usage(string name)
 		<< "\t-r,--reallanes \t\tSpecify the number of real lanes (Default: " << REAL_LANES << ")\n"
 		<< "\t-v,--virtuallanes \tSpecify the number of virtual lanes (Default: " << VIRTUAL_LANES << ")\n"
 		<< "\t-L,--lanechange \tToggle lane changing (Default: " << LANE_CHANGE << ")\n"
+		<< "\t,--loadseed \tSet seed state (Default: " << LOAD_SEED << ")\n"
 		<< endl;
 }
 
@@ -255,6 +261,16 @@ int parser(int argc, char* argv[]){
 				return 1;
 			}
 		}
+		else if (arg == "--loadseed") {
+			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
+				i++;
+				LOAD_SEED = atoi(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+			}
+			else {
+				std::cerr << "--loadseed option requires one argument (0 or 1)." << std::endl;
+				return 1;
+			}
+		}
 	}
 	return 0;
 }
@@ -274,7 +290,8 @@ int main(int argc, char* argv[]){
 		omp_set_num_threads(2);
 		#pragma omp parallel for
 		for (int i = 0; i < densities.size(); i++){
-			runmsg[i] = start(densities[i], car_ratio);
+			if (LOAD_SEED=false) seed = time(NULL) * 123456789;
+			runmsg[i] = start(densities[i], car_ratio, seed);
 			printstat(runmsg, densities, car_ratio);
 		}
 	return 0;
