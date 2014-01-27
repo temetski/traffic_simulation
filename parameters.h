@@ -1,18 +1,23 @@
+#ifndef _PARAMETERS_H
+#define _PARAMETERS_H
+
 /* Program parameters are defined here */
 #include <vector>
 
 using std::vector;
 
-typedef vector<vector<int> > road_arr;
-int ROADLENGTH = 50; //-R
-int REAL_LANES = 1; //-r
-int VIRTUAL_LANES = 0; //-v
-int LANES = REAL_LANES + VIRTUAL_LANES;
-int V_MAX = 5;
-int TIMESTEPS = 10; //-t
-int TRIALS = 10; //-T
-double SLOWDOWN = 0.3;
-double LANE_CHANGE_PROB = 0.8;
-double car_ratio=0;
-bool LANE_CHANGE = false;
-bool LOAD_SEED = false;
+
+extern int ROADLENGTH; //-R
+extern int REAL_LANES; //-r
+extern int VIRTUAL_LANES; //-v
+extern int LANES;
+extern int V_MAX;
+extern int TIMESTEPS; //-t
+extern int TRIALS; //-T
+extern double SLOWDOWN;
+extern double LANE_CHANGE_PROB;
+extern double car_ratio;
+extern bool LANE_CHANGE;
+extern bool LOAD_SEED;
+
+#endif

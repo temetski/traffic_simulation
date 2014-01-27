@@ -1,3 +1,6 @@
+#ifndef _HDF_SAVE_COMPRESS_H
+#define _HDF_SAVE_COMPRESS_H
+
 #ifdef _WIN32
 	#include "cpp/H5Cpp.h"
 //	#include "H5Cpp.h"
@@ -9,7 +12,7 @@
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
 #endif
-
+	
 using namespace std;
 
 int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, int trial, char* _filename,
@@ -160,3 +163,4 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 	delete[] _data;
 	return 0;  // successfully terminated
 }
+#endif
