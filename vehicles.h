@@ -27,7 +27,7 @@ public:
 	double chance_right;
 
 private:
-	vector<int> vehicle::headway(road_arr& road);
+	vector<int> headway(road_arr& road);
 	int aveheadway(vector<int>& headwaycount);
 	bool check_lane(road_arr& road, int direction);
 
