@@ -28,18 +28,18 @@ public:
 
 private:
 	vector<int> vehicle::headway(road_arr& road);
-	int vehicle::aveheadway(vector<int>& headwaycount);
-	bool vehicle::check_lane(road_arr& road, int direction);
+	int aveheadway(vector<int>& headwaycount);
+	bool check_lane(road_arr& road, int direction);
 
 public:
-	void vehicle::place(road_arr& road);
-	void vehicle::remove(road_arr& road);
-	void vehicle::accelerate(void);
-	void vehicle::decelerate(road_arr& road);
-	void vehicle::random_slow(void);
-	void vehicle::move(road_arr& road);
-	void vehicle::change_lane(road_arr& road);
-	vector<int> vehicle::stats(void);
+	void place(road_arr& road);
+	void remove(road_arr& road);
+	void accelerate(void);
+	void decelerate(road_arr& road);
+	void random_slow(void);
+	void move(road_arr& road);
+	void change_lane(road_arr& road);
+	vector<int> stats(void);
 };
 
 class car : public vehicle{
