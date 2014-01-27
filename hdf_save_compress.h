@@ -107,7 +107,7 @@ int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, in
 														PredType::STD_I32BE, 
 														attr_dataspace, 
 														PropList::DEFAULT);
-		attribute.write(PredType::STD_I8LE, attr_data);
+		attribute.write(PredType::STD_I32LE, attr_data);
 		attribute.close();
 
 		dataset->close();

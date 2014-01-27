@@ -8,7 +8,6 @@
 #include <gsl/gsl_randist.h>
 #include <vector>
 #include <algorithm> //random_shuffle, distance, max_element
-#include <ctime>
 #include <omp.h>
 
 #include <fstream>
@@ -20,6 +19,19 @@
 using namespace std;
 
 int DATAPOINTS = 1000;
+
+int ROADLENGTH = 50; //-R
+int REAL_LANES = 1; //-r
+int VIRTUAL_LANES = 0; //-v
+int LANES = REAL_LANES + VIRTUAL_LANES;
+int V_MAX = 5;
+int TIMESTEPS = 10; //-t
+int TRIALS = 10; //-T
+double SLOWDOWN = 0.3;
+double LANE_CHANGE_PROB = 0.8;
+double car_ratio = 0;
+bool LANE_CHANGE = false;
+bool LOAD_SEED = false;
 
 struct Simulation{
 public:
@@ -290,7 +302,7 @@ int main(int argc, char* argv[]){
 		omp_set_num_threads(2);
 		#pragma omp parallel for
 		for (int i = 0; i < densities.size(); i++){
-			if (LOAD_SEED=false) seed = time(NULL) * 123456789;
+			if (LOAD_SEED == false) seed = time(NULL) * 123456789;
 			runmsg[i] = start(densities[i], car_ratio, seed);
 			printstat(runmsg, densities, car_ratio);
 		}
