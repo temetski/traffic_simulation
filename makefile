@@ -10,7 +10,7 @@ LFLAGS = -Wall -g -fopenmp
 TARGET = traffic_simulation
 
 LIBS = -lgsl -lgslcblas -lhdf5 -lhdf5_cpp
-OBJS = traffic_simulation.o vehicles.o
+OBJS = traffic_simulation.o vehicles.o 
 
 
 $(TARGET): $(OBJS)
@@ -21,6 +21,9 @@ vehicles.o: parameters.h  vehicles.h vehicles.cpp
 
 traffic_simulation.o: hdf_save_compress.h vehicles.h traffic_simulation.cpp
 	$(CC) -std=c++11 $(CFLAGS) traffic_simulation.cpp $(LIBS)
+
+parameters.o: parameters.h
+	$(CC) -std=c++11 $(CFLAGS) parameters.cpp $(LIBS)
 
 #vehicles.o: parameters.h  vehicles.h vehicles.cpp 
 #	$(CC) -std=c++11 $(CFLAGS) vehicles.cpp $(LIBS)
