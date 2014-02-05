@@ -26,7 +26,7 @@ traffic_simulation.o: hdf_save_compress.h vehicles.h traffic_simulation.cpp
 	$(CC) -std=c++11 $(CFLAGS) traffic_simulation.cpp $(LIBS)
 
 
-
+# gcc -Wl,-rpath,\$$ORIGIN/lib/ obj1.o obj2.o -o my_application
 #vehicles.o: parameters.h  vehicles.h vehicles.cpp 
 #	$(CC) -std=c++11 $(CFLAGS) vehicles.cpp $(LIBS)
 
