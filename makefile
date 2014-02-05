@@ -4,8 +4,9 @@ CC = gcc
 # compiler flags:
 #  -g    adds debugging information to the executable file
 #  -Wall turns on most, but not all, compiler warnings
-CFLAGS  = -g -Wall -c -L/usr/lib -I/usr/include -fopenmp
-LFLAGS = -Wall -g -fopenmp
+
+CFLAGS  = -g -Wall -c -I/usr/include -fopenmp 
+LFLAGS = -Wall -g -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib
 # the build target executable:
 TARGET = traffic_simulation
 
