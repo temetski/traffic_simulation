@@ -13,6 +13,7 @@ import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 import glob
 import re
+import os
 from subprocess import call
 import h5py
 
@@ -26,9 +27,11 @@ SPEED = 0
 SIZE = -1
 LAST = -1
 
+
 def throughput(_trial):
     '''Computes the throughput of one trial of the simulation.'''
     return np.sum([vehicles[SPEED]/ROADLENGTH for vehicles in _trial[LAST]])
+
 
 def load(_ratio, _density):
     '''Loads data from the hdf5 dataset.'''
@@ -42,14 +45,15 @@ def load(_ratio, _density):
         dset = fid[group+_trial]
         vehicledata = np.append(vehicledata, dset)
     vehicledata = np.reshape(vehicledata, (TRIALS, dset.shape[0],
-                                         dset.shape[1],
-                                         dset.shape[2]))
+                                           dset.shape[1],
+                                           dset.shape[2]))
     fid.close()
     call(["bzip2", "-6", filename])
     return vehicledata
 
 if __name__ == "__main__":
     FILES = glob.glob("*.bz2")
+    DIRNAME = os.path.split(os.getcwd())[1]
     DENSITIES = np.arange(0.05, 1, 0.05)
     RATIOS = np.array([])
     for i in FILES:
@@ -59,29 +63,28 @@ if __name__ == "__main__":
 
     THROUGHPUT = np.zeros([len(RATIOS), len(DENSITIES)])
     STDEV = np.zeros([len(RATIOS), len(DENSITIES)])
-    for x, ratio in enumerate(np.arange(1)):#0.1,1,0.1)):
+    for x, ratio in enumerate(RATIOS):
         for y, density in enumerate(DENSITIES):
             data = load(ratio, density)
-            # sizedata = vehicledata[:,2001:,:,SIZE]
             data = np.cumsum(data[:, :, :, :], axis=1)
             flux = [throughput(trial)
-                            for trial in data]
+                    for trial in data]
             THROUGHPUT[x, y] = np.mean(flux)
             STDEV[x, y] = np.std(flux)
 
     __markers__ = list(lines.Line2D.markers.keys())
     __markers__.sort()
     N = len(__markers__)
-    __labels__ = np.arange(0.1, 1, 0.1)
+    __labels__ = RATIOS
+    fig = plt.figure(1)
+    ax = fig.add_subplot(111)
     for ydata, label, i in zip(THROUGHPUT, __labels__, range(len(__labels__))):
         marker = __markers__[i % N]
-        plt.errorbar(DENSITIES, ydata, 
+        ax.errorbar(DENSITIES, ydata,
                     yerr=STDEV[i, :], label=label, marker=marker)
-    plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
-    plt.xlabel('road density', size=18)
-    plt.ylabel('number of exiting vehicles', size=18)
-    #plt.ylim(0,2000)
-    #plt.xlim(0,1.2)
-    plt.title(r'Two Real lanes with adaptation', size=18)
-
-    plt.savefig("throughput.png")
+    lgd = ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1))
+    ax.set_xlabel('road density')
+    ax.set_ylabel('number of exiting vehicles')
+    ax.set_title(DIRNAME)
+    fig.savefig('throughput_%s.png'%DIRNAME,
+                bbox_extra_artists=(lgd,),bbox_inches='tight')
