@@ -8,6 +8,10 @@ TRIALS=50
 TIMESTEPS=3000
 ROADLENGTH=50
 
+function run_sim {
+	traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
+}
+
 function Two_Homo_Car {
 	REAL_LANES=4
 	VIRTUAL_LANES=0
@@ -17,7 +21,8 @@ function Two_Homo_Car {
 	cd $DIR
 
 	car_ratio=1
-	traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
+	run_sim
+	cd ..
 }
 
 function Two_Homo_Motorcycle {
@@ -29,7 +34,8 @@ function Two_Homo_Motorcycle {
 	cd $DIR
 
 	car_ratio=0
-	traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
+	run_sim
+	cd ..
 }
 
 function Single_Lane {
@@ -42,8 +48,9 @@ function Single_Lane {
 
 	for car_ratio in `seq 0 0`;
 	do
-		traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
+		run_sim
 	done
+	cd ..
 }
 
 function Two_Virtual {
@@ -56,8 +63,9 @@ function Two_Virtual {
 
 	for car_ratio in `seq 0 0.05 1`;
 	do
-		traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
+		run_sim
 	done
+	cd ..
 }
 
 Two_Virtual
