@@ -12,8 +12,8 @@ function Two_Homo_Car {
 	REAL_LANES=4
 	VIRTUAL_LANES=0
 	LANE_CHANGE=0
-	DIR=Homogenous/Two_Homo_Car
-	mkdir -p $DIR
+	DIR=Two_Homo_Car
+	mkdir $DIR
 	cd $DIR
 
 	car_ratio=1
@@ -24,7 +24,7 @@ function Two_Homo_Motorcycle {
 	REAL_LANES=4
 	VIRTUAL_LANES=0
 	LANE_CHANGE=0
-	DIR=Homogenous/Two_Homo_Motorcycle
+	DIR=Two_Homo_Motorcycle
 	mkdir -p $DIR
 	cd $DIR
 
