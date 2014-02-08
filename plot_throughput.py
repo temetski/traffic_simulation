@@ -60,7 +60,7 @@ if __name__ == "__main__":
         car_ratio = float(re.findall(r"CarRatio.(\d.\d+)", i)[0])
         if car_ratio not in RATIOS:
             RATIOS = np.append(RATIOS, car_ratio)
-
+    RATIOS.sort()
     THROUGHPUT = np.zeros([len(RATIOS), len(DENSITIES)])
     STDEV = np.zeros([len(RATIOS), len(DENSITIES)])
     for x, ratio in enumerate(RATIOS):
