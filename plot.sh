@@ -2,7 +2,7 @@
 
 #Script to be used with traffic_simulation.
 
-export PATH = `pwd`:$PATH
+export PATH=`pwd`:$PATH
 
 function Two_Homo_Car {
 	DIR=Two_Homo_Car

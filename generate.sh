@@ -2,7 +2,7 @@
 
 #Script to be used with traffic_simulation.
 
-export PATH = `pwd`:$PATH
+export PATH=`pwd`:$PATH
 
 TRIALS=50
 TIMESTEPS=3000
