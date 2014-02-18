@@ -12,31 +12,22 @@ function run_sim {
 	traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
 }
 
-function Two_Homo_Car {
+function Two_Real {
 	REAL_LANES=4
 	VIRTUAL_LANES=0
 	LANE_CHANGE=0
-	DIR=Two_Homo_Car
+	DIR=Two_Real
 	mkdir $DIR
 	cd $DIR
+	
+	for car_ratio in `seq 0 0.05 1`;
+        do
+                run_sim
+        done
+        cd ..
 
-	car_ratio=1
-	run_sim
-	cd ..
 }
 
-function Two_Homo_Motorcycle {
-	REAL_LANES=4
-	VIRTUAL_LANES=0
-	LANE_CHANGE=0
-	DIR=Two_Homo_Motorcycle
-	mkdir -p $DIR
-	cd $DIR
-
-	car_ratio=0
-	run_sim
-	cd ..
-}
 
 function Single_Lane {
 	REAL_LANES=1
@@ -69,7 +60,6 @@ function Two_Virtual {
 }
 
 Two_Virtual
-Two_Homo_Motorcycle
-Two_Homo_Car
+Two_Real
 Single_Lane
 

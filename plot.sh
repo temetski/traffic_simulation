@@ -4,15 +4,8 @@
 
 export PATH=`pwd`:$PATH
 
-function Two_Homo_Car {
-	DIR=Two_Homo_Car
-	cd $DIR
-	plot_throughput.py
-	cd ..
-}
-
-function Two_Homo_Motorcycle {
-	DIR=Two_Homo_Motorcycle
+function Two_Real {
+	DIR=Two_Real
 	cd $DIR
 	plot_throughput.py
 	cd ..
@@ -33,7 +26,6 @@ function Two_Virtual {
 }
 
 Two_Virtual
-Two_Homo_Motorcycle
-Two_Homo_Car
+Two_Real
 Single_Lane
 
