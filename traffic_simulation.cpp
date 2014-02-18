@@ -14,6 +14,7 @@
 #include <bzlib.h>
 
 #include "hdf_save_compress.h"
+#include "parameters.h"
 #include "vehicles.h"
 
 using namespace std;

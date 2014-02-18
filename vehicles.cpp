@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#include <vector>
+#include <algorithm> //random_shuffle, distance, max_element
+#include <ctime>
+#include "parameters.h"
 #include "vehicles.h"
 
 gsl_rng * generator = gsl_rng_alloc(gsl_rng_mt19937);
