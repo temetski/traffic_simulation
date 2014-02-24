@@ -13,7 +13,7 @@
 #include <fstream>
 #include <bzlib.h>
 
-#include "hdf_save_compress.h"
+#include "hdf_save.h"
 #include "parameters.h"
 #include "vehicles.h"
 
@@ -28,7 +28,7 @@ public:
 	vector<int> throughput;
 	vector<vector<vector<int> > > vehicle_data;
 	int number_vehicles;
-	
+
 	Simulation(void) {}
 	~Simulation(void) {}
 
@@ -117,7 +117,7 @@ private:
 		}
 		else vector<vehicle> moto_array(0);
 		/* Cleanup Operations */
-		
+
 		vehicle_array.swap(car_array);
 		//vector<vehicle>().swap(car_array);
 		//vector<vehicle>().swap(moto_array);
