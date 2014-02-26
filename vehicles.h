@@ -22,7 +22,7 @@ typedef vector<vector<int> > road_arr;
 
 class vehicle {
 public:
-	int vel, pos, lane, width, length, marker, size, prev_lane = lane, _distance;
+	short pos, lane, prev_lane = lane, _distance, width, length, marker, vel, size;
 	bool changed_lane = false, exit_road = false;
 	double chance_right;
 
@@ -39,7 +39,8 @@ public:
 	void random_slow(void);
 	void move(road_arr& road);
 	void change_lane(road_arr& road);
-	vector<int> stats(void);
+	vector<short> stats(void);
+	vector<short> pos_data(void);
 };
 
 class car : public vehicle{

@@ -167,12 +167,17 @@ void vehicle::change_lane(road_arr& road){
 	changed_lane = false;
 }
 
-vector<int> vehicle::stats(void){
-	vector<int> arr(2);
+vector<short> vehicle::stats(void){
+	vector<short> arr(2);
 	arr = { vel, size };
 	return arr;
 }
 
+vector<short> vehicle::pos_data(void){
+	vector<short> arr(2);
+	arr = { pos, lane };
+	return arr;
+}
 
 bool place_check(int pos, int lane, int length, int width,
 	road_arr& road, int ROADLENGTH){
