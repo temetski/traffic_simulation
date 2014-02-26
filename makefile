@@ -7,7 +7,7 @@ LFLAGS = -Wall -g -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib
 TARGET = traffic_simulation
 
 LIBS = -lgsl -lgslcblas -lhdf5 -lhdf5_cpp
-OBJS = traffic_simulation.o vehicles.o parameters.o hdf_save.o
+OBJS = traffic_simulation.o vehicles.o parameters.o hdf_save.o simulation.o
 
 
 $(TARGET): $(OBJS)
@@ -22,7 +22,10 @@ vehicles.o: parameters.o vehicles.h vehicles.cpp
 hdf_save.o: hdf_save.h hdf_save.cpp
 	$(CPP) -std=c++11 $(CFLAGS) hdf_save.cpp $(LIBS)
 
-traffic_simulation.o: hdf_save.o vehicles.o traffic_simulation.cpp
+simulation.o: simulation.h simulation.cpp
+	$(CPP) -std=c++11 $(CFLAGS) simulation.cpp $(LIBS)
+
+traffic_simulation.o: hdf_save.o vehicles.o simulation.o parameters.o traffic_simulation.cpp
 	$(CPP) -std=c++11 $(CFLAGS) traffic_simulation.cpp $(LIBS)
 
 clean:

@@ -13,10 +13,25 @@ function run_sim {
 }
 
 function Two_Real {
+        REAL_LANES=4
+        VIRTUAL_LANES=0
+        LANE_CHANGE=1
+        DIR=Two_Real
+        mkdir $DIR
+        cd $DIR
+
+        for car_ratio in `seq 0 0.05 1`;
+        do
+                run_sim
+        done
+        cd ..
+}
+
+function Two_Real_NoLaneChange {
 	REAL_LANES=4
 	VIRTUAL_LANES=0
 	LANE_CHANGE=0
-	DIR=Two_Real
+	DIR=Two_Real_NoLaneChange
 	mkdir $DIR
 	cd $DIR
 	
@@ -25,7 +40,6 @@ function Two_Real {
                 run_sim
         done
         cd ..
-
 }
 
 
