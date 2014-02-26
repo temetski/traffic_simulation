@@ -12,7 +12,8 @@ void Simulation::evolve(float density, float car_ratio){
     for (unsigned i = 0; i < permutation.size(); i++) permutation[i] = i;
     random_shuffle(permutation.begin(), permutation.end());
     for (int t = 0; t < TIMESTEPS; t++){
-        vector<vector<int> > vehicle_stats;
+        vector<vector<short> > vehicle_stats;
+		vector<vector<short> > vehicle_pos_data;
         passed_vehicles = 0;
         for (int i : permutation){
             vehicle_array[i].accelerate();
@@ -30,9 +31,13 @@ void Simulation::evolve(float density, float car_ratio){
         }
         /* Eliminate the transient 2000 steps */
         if (t >= TIMESTEPS-DATAPOINTS){
-            for (vehicle vehicle : vehicle_array) vehicle_stats.push_back(vehicle.stats());
+			for (vehicle vehicle : vehicle_array) {
+				vehicle_stats.push_back(vehicle.stats());
+				vehicle_pos_data.push_back(vehicle.pos_data());
+			}
             vehicle_data.push_back(vehicle_stats);
-            vector<vector<int> >().swap(vehicle_stats);
+			vehicle_positions.push_back(vehicle_pos_data);
+            vector<vector<short> >().swap(vehicle_stats);
         }
         random_shuffle(permutation.begin(), permutation.end());
     }

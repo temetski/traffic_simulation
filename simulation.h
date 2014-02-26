@@ -9,7 +9,8 @@ public:
 	road_arr road;
 	vector<vehicle> vehicle_array;
 	vector<int> throughput;
-	vector<vector<vector<int> > > vehicle_data;
+	vector<vector<vector<short> > > vehicle_data;
+	vector<vector<vector<short> > > vehicle_positions;
 	int number_vehicles;
 
 	Simulation(void) {}

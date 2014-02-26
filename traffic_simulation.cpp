@@ -1,3 +1,7 @@
+#if (_MSC_VER >= 1400)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <iostream>
 #include <stdio.h>
 #include <gsl/gsl_rng.h>
@@ -15,7 +19,6 @@
 using namespace std;
 
 
-
 void BZIP(char* _filename){
 	char message[100];
 	sprintf(message, "bzip2 -6 %s", _filename);
@@ -25,7 +28,7 @@ void BZIP(char* _filename){
 string start(float density, float car_ratio, time_t seed){
 	gsl_rng_set(generator, seed);
 	time_t start = clock();
-	vector<vector<vector<int> > > DATA;
+	vector<vector<vector<short> > > DATA;
 	char _filename[30];
 	sprintf(_filename, "CarRatio.%.2f_Density.%.2f.h5", car_ratio, density);
 	for (int trial = 1; trial < TRIALS + 1; trial++){
@@ -179,7 +182,7 @@ int main(int argc, char* argv[]){
 	}
 		omp_set_num_threads(2);
 		#pragma omp parallel for
-		for (unsigned i = 0; i < densities.size(); i++){
+		for (int i = 0; i < densities.size(); i++){
 			if (LOAD_SEED == false) seed = time(NULL) * 123456789;
 			runmsg[i] = start(densities[i], car_ratio, seed);
 			printstat(runmsg, densities, car_ratio);

@@ -18,6 +18,6 @@
 
 using namespace std;
 
-int hd5data(vector<vector<vector<int>>> data, float density, float car_ratio, int trial, char* _filename,
+int hd5data(vector<vector<vector<short>>> data, float density, float car_ratio, int trial, char* _filename,
 			long seed);
 #endif
