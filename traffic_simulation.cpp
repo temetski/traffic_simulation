@@ -44,6 +44,18 @@ string start(float density, float car_ratio, time_t seed){
 	return message;
 }
 
+void animate(float density, float car_ratio, time_t seed){
+	gsl_rng_set(generator, seed);
+	vector<vector<vector<short> > > POS_DATA;
+	char _filename[40];
+	sprintf(_filename, "Animation_CarRatio.ŝ%.2f_Density.%.2f.h5", car_ratio, density);
+    Simulation *traffic = new Simulation;
+    traffic->evolve(density, car_ratio);
+    POS_DATA = traffic->vehicle_positions;
+    delete traffic;
+    hd5data(POS_DATA, density, car_ratio, 0, _filename, seed);
+}
+
 void printstat(vector<string> status, vector<float> densities, float car_ratio){
 #if (_WIN32)
 	char clear[6] = "CLS";
