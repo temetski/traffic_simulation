@@ -8,10 +8,10 @@
 #include <gsl/gsl_randist.h>
 #include <vector>
 #include <algorithm> //random_shuffle, distance, max_element
-#include <omp.h>
+
 #include <fstream>
 #include <bzlib.h>
-
+#include "parameters.h"
 #include "hdf_save.h"
 #include "simulation.h"
 
@@ -133,20 +133,11 @@ int parser(int argc, char* argv[]){
 int main(int argc, char* argv[]){
 	int status = parser(argc, argv);
 	if (status == 1) return 1;
+	printf("Enter the desired density parameter:");
+	float density;
+	scanf("%f", &density);
+	if (LOAD_SEED == false) seed = time(NULL) * 123456789;
+	animate(density, car_ratio, seed);
 
-	vector<float> densities(19);
-	vector<string> runmsg(19, "Not Done");
-	double first = 0.05;
-	for (int i = 0; i < 19; i++){
-		densities[i] = first;
-		first += 0.05;
-	}
-		omp_set_num_threads(2);
-		#pragma omp parallel for
-		for (int i = 0; i < densities.size(); i++){
-			if (LOAD_SEED == false) seed = time(NULL) * 123456789;
-			runmsg[i] = start(densities[i], car_ratio, seed);
-			printstat(runmsg, densities, car_ratio);
-		}
 	return 0;
 }

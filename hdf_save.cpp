@@ -7,8 +7,9 @@ int hd5data(vector<vector<vector<short>>> data, float density, float car_ratio, 
     #define COMPRESSION_LEVEL 6
 	int VEHICLENUM = data[0].size();
 	int TIMESTEPS = data.size();
-	hsize_t     dims[RANK] = { TIMESTEPS, VEHICLENUM, 2 };
-	char *_data = new char[TIMESTEPS*VEHICLENUM * 2];
+	int PARAMS = data[0][0].size();
+	hsize_t     dims[RANK] = { TIMESTEPS, VEHICLENUM, PARAMS };
+	char *_data = new char[TIMESTEPS*VEHICLENUM * PARAMS];
 	char _density[16];
 	char _car_ratio[16];
 	char _trial[16];
@@ -18,10 +19,10 @@ int hd5data(vector<vector<vector<short>>> data, float density, float car_ratio, 
 	Group* group2;
 
 	/* Convert the vector into an array */
-	for (int i = 0; i < TIMESTEPS*VEHICLENUM * 2; i++) {
-		int b = i / (VEHICLENUM * 2);
-		int c = i / (2) % VEHICLENUM;
-		int d = i % 2;
+	for (int i = 0; i < TIMESTEPS*VEHICLENUM * PARAMS; i++) {
+		int b = i / (VEHICLENUM * PARAMS);
+		int c = i / PARAMS % VEHICLENUM;
+		int d = i % PARAMS;
 		_data[i] = data[b][c][d];
 	}
 
@@ -66,10 +67,9 @@ int hd5data(vector<vector<vector<short>>> data, float density, float car_ratio, 
 	try
 	{
 		// Create the data space for the dataset.
-
 		DataSpace *dataspace = new DataSpace(RANK, dims);
 
-		hsize_t     chunk_dims[RANK] = { 1, VEHICLENUM, 2 };
+		hsize_t     chunk_dims[RANK] = { 1, VEHICLENUM, PARAMS };
 		DSetCreatPropList  *plist = new  DSetCreatPropList;
 		plist->setChunk(RANK, chunk_dims);
 
@@ -81,7 +81,7 @@ int hd5data(vector<vector<vector<short>>> data, float density, float car_ratio, 
 		// Create the dataset.
 		DataSet *dataset = new DataSet(group2->createDataSet(DATASET_NAME, PredType::STD_I32BE, *dataspace, *plist));
 		dataset->write(_data, PredType::STD_I8LE);
-
+		
 		DataSet s = group2->openDataSet(DATASET_NAME);
 		const H5std_string	ATTR_NAME = "RNG Seed";
 		hsize_t attdims[1] = { 1 };

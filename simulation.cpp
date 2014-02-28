@@ -1,5 +1,6 @@
-#include "simulation.h"
-
+﻿#include "simulation.h"
+#include "hdf_save.h"
+#include <iostream>
 
 int DATAPOINTS = 1000;
 
@@ -60,9 +61,9 @@ void Simulation::initialize(float density, float car_ratio){
         for (counter = 0; counter < number_car; counter++){
             int iterations = 0;
             pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
-            lane = lane_choice[gsl_rng_uniform_int(generator, 2)];
+			lane = lane_choice[gsl_rng_uniform_int(generator, 2)];
             while (!place_check(pos, lane, car().length, car().width, road, ROADLENGTH)){
-                pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
+				pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1; 
                 lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
                 if (iterations > 500) break;
                 iterations += 1;
@@ -98,4 +99,52 @@ void Simulation::initialize(float density, float car_ratio){
     vehicle_array.swap(car_array);
 }
 
+void BZIP(char* _filename){
+	char message[100];
+	sprintf(message, "bzip2 -6 %s", _filename);
+	system(message);
+}
 
+
+string start(float density, float car_ratio, time_t seed){
+	gsl_rng_set(generator, seed);
+	time_t start = clock();
+	vector<vector<vector<short> > > DATA;
+	char _filename[30];
+	sprintf(_filename, "CarRatio.%.2f_Density.%.2f.h5", car_ratio, density);
+	for (int trial = 1; trial < TRIALS + 1; trial++){
+		Simulation *traffic = new Simulation;
+		traffic->evolve(density, car_ratio);
+		DATA = traffic->vehicle_data;
+		delete traffic;
+		hd5data(DATA, density, car_ratio, trial, _filename, seed);
+	}
+	BZIP(_filename);
+	char message[30];
+	sprintf(message, "done in %.3f seconds.", (clock() - start)*1.0 / (CLOCKS_PER_SEC));
+	return message;
+}
+
+void animate(float density, float car_ratio, time_t seed){
+	gsl_rng_set(generator, seed);
+	vector<vector<vector<short> > > POS_DATA;
+	char _filename[30];
+	sprintf(_filename, "Animation_CR.%.2f_D.%.2f.h5", car_ratio, density);
+	Simulation *traffic = new Simulation;
+	traffic->evolve(density, car_ratio);
+	POS_DATA = traffic->vehicle_positions;
+	delete traffic;
+	hd5data(POS_DATA, density, car_ratio, 0, _filename, seed);
+}
+
+void printstat(vector<string> status, vector<float> densities, float car_ratio){
+#if (_WIN32)
+	char clear[6] = "CLS";
+#else
+	char clear[8] = "clear";
+#endif
+	system(clear);
+	for (int i = 0; i < 19; i++){
+		cout << "Density::" << densities[i] << "\t\tCarRatio::" << car_ratio << "\t\tStatus:" << status[i] << endl;
+	}
+}
