@@ -138,6 +138,8 @@ int main(int argc, char* argv[]){
 	scanf("%f", &density);
 	if (LOAD_SEED == false) seed = time(NULL) * 123456789;
 	animate(density, car_ratio, seed);
-
+	char anim_py[100];
+	sprintf(anim_py, "python animation.py --carratio %.2f --density %.2f --lanes %d", car_ratio, density, LANES);
+	system(anim_py);
 	return 0;
 }

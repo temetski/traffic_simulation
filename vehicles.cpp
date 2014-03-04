@@ -174,8 +174,8 @@ vector<short> vehicle::stats(void){
 }
 
 vector<short> vehicle::pos_data(void){
-	vector<short> arr(3);
-	arr = { pos, lane, size };
+	vector<short> arr(4);
+	arr = { pos, lane, vel, size };
 	return arr;
 }
 
