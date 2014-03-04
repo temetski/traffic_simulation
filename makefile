@@ -4,18 +4,19 @@ CPP = g++
 CFLAGS  = -g -Wall -c -I/usr/include -fopenmp
 LFLAGS = -Wall -g -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib
 # the build target executable:
-TARGET = traffic_simulation
-TARGET2 = traffic_animation
+SIMULATION = traffic_simulation
+ANIMATION = traffic_animation
 
 LIBS = -lgsl -lgslcblas -lhdf5 -lhdf5_cpp
 OBJS = traffic_simulation.o vehicles.o parameters.o hdf_save.o simulation.o
 OBJS2 = traffic_animation.o vehicles.o parameters.o hdf_save.o simulation.o
 
-$(TARGET): $(OBJS)
-	$(CPP) -std=c++11 $(LFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+all: $(SIMULATION) $(ANIMATION)
+$(SIMULATION): $(OBJS)
+	$(CPP) -std=c++11 $(LFLAGS) $(OBJS) -o $(SIMULATION) $(LIBS)
 
-$(TARGET2): $(OBJS2)
-	$(CPP) -std=c++11 $(LFLAGS) $(OBJS2) -o $(TARGET2) $(LIBS)
+$(ANIMATION): $(OBJS2)
+	$(CPP) -std=c++11 $(LFLAGS) $(OBJS2) -o $(ANIMATION) $(LIBS)
 
 traffic_animation.o: hdf_save.o vehicles.o simulation.o parameters.o traffic_animation.cpp
 	$(CPP) -std=c++11 $(CFLAGS) traffic_animation.cpp $(LIBS)
@@ -36,5 +37,5 @@ traffic_simulation.o: hdf_save.o vehicles.o simulation.o parameters.o traffic_si
 	$(CPP) -std=c++11 $(CFLAGS) traffic_simulation.cpp $(LIBS)
 
 clean:
-	$(RM) $(TARGET) $(OBJS) $(TARGET2) $(OBJS2)
+	$(RM) $(SIMULATION) $(OBJS) $(ANIMATION) $(OBJS2)
 
