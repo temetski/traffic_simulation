@@ -64,7 +64,7 @@ void Simulation::initialize(float density, float car_ratio){
 			if (lane_choice.size()>2) lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
 			else lane = lane_choice[0];
             while (!place_check(pos, lane, car().length, car().width, road, ROADLENGTH)){
-				pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1; 
+				pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
                 lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
                 if (iterations > 500) break;
                 iterations += 1;

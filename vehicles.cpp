@@ -22,15 +22,19 @@ time_t seed = time(NULL) * 123456789;
 //}
 
 void vehicle::place(road_arr& road){
-	for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _pos < (pos + 1); _pos++){
+    _lengthcount = 0;
+	for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _lengthcount < length; _pos++){
+        _lengthcount++;
 		for (int _lane = lane; _lane < lane + width; _lane++){
 			road[_lane][_pos%ROADLENGTH] += marker;
 		}
-	}	
+	}
 }
 
 void vehicle::remove(road_arr& road){
-	for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _pos < (pos + 1); _pos++){
+    _lengthcount = 0;
+	for (int _pos = (pos - length + ROADLENGTH + 1)%ROADLENGTH; _lengthcount < length; _pos++){
+        _lengthcount++;
 		for (int _lane = lane; _lane < lane + width; _lane++){
 			road[_lane][_pos%ROADLENGTH] -= marker;
 		}
@@ -181,7 +185,9 @@ vector<short> vehicle::pos_data(void){
 
 bool place_check(int pos, int lane, int length, int width,
 	road_arr& road, int ROADLENGTH){
-	for (int _pos = (pos - length + 1); _pos < (pos + 1); _pos++){
+    int _lengthcount = 0;
+	for (int _pos = (pos - length + 1); _lengthcount < length; _pos++){
+        _lengthcount++;
 		for (int _lane = lane; _lane < lane + width; _lane++){
 			if (road[_lane][_pos%ROADLENGTH] != 0) return false;
 		}

@@ -27,6 +27,7 @@ public:
 	double chance_right;
 
 private:
+    int _lengthcount;
 	vector<int> headway(road_arr& road);
 	int aveheadway(vector<int>& headwaycount);
 	bool check_lane(road_arr& road, int direction);
