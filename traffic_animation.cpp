@@ -29,7 +29,7 @@ static void show_usage(string name)
 		<< "\t-r,--reallanes \t\tSpecify the number of real lanes (Default: " << REAL_LANES << ")\n"
 		<< "\t-v,--virtuallanes \tSpecify the number of virtual lanes (Default: " << VIRTUAL_LANES << ")\n"
 		<< "\t-L,--lanechange \tToggle lane changing (Default: " << LANE_CHANGE << ")\n"
-		<< "\t,--loadseed \tSet seed state (Default: " << LOAD_SEED << ")\n"
+		<< "\t--loadseed \t\tSet seed state (Default: " << LOAD_SEED << ")\n"
 		<< endl;
 }
 
