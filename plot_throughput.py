@@ -77,13 +77,13 @@ if __name__ == "__main__":
             flux = [throughput(trial)
                     for trial in datasum]
             THROUGHPUT[x][y] = flux
-            VELOCITIES[x][y] = np.average([velocities(trial) for trial in data])
-    MEDIANS = [[np.median(_density) for _density in _car_ratio] for _car_ratio in THROUGHPUT]
+            VELOCITIES[x][y] = [velocities(trial) for trial in data]
+    MEDIANS = np.median(THROUGHPUT, axis=2) # Median for trials in car ratios
     fig = plt.figure(1)
     ax = fig.add_subplot(111)
     for ydata, median, label, i in zip(THROUGHPUT, MEDIANS, RATIOS, range(len(RATIOS))):
         color = "%s" % (i*0.15)
-        ax.plot(DENSITIES, median)
+        ax.plot(DENSITIES, median, color=color, linewidth=3)
         bp = ax.boxplot(ydata, positions=DENSITIES, widths=0.02)
         plt.setp(bp['boxes'], color=color)
         plt.setp(bp['whiskers'], color=color)
@@ -101,9 +101,14 @@ if __name__ == "__main__":
     ax2 = fig2.add_subplot(111)
     for ydata, median, label, i in zip(VELOCITIES, MEDIANS, RATIOS, range(len(RATIOS))):
         color = "%s" % (i*0.15)
-        ax2.plot(DENSITIES, ydata,color=color)
+        ax2.plot(DENSITIES, np.median(ydata, axis=1), color=color, linewidth=3)
+        bp = ax2.boxplot(ydata, positions=DENSITIES, widths=0.02)
+        plt.setp(bp['boxes'], color=color)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['fliers'], color=color)
+        plt.setp(bp['medians'], color=color)
     ax2.set_xlabel('road density')
-    ax2.set_ylabel('average velocity')
+    ax2.set_ylabel('median average velocity')
     ax2.set_title(DIRNAME)
     ax2.set_xlim(0, 1)
     ax2.set_xticks(DENSITIES[1::2])
