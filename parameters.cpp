@@ -12,3 +12,4 @@ double LANE_CHANGE_PROB = 0.8;
 double car_ratio = 0;
 bool LANE_CHANGE = false;
 bool LOAD_SEED = false;
+bool ANIMATE = false;

@@ -19,5 +19,5 @@ extern double LANE_CHANGE_PROB;
 extern double car_ratio;
 extern bool LANE_CHANGE;
 extern bool LOAD_SEED;
-
+extern bool ANIMATE;
 #endif

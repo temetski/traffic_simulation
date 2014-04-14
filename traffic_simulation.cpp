@@ -21,6 +21,7 @@ static void show_usage(string name)
 {
 	std::cerr << "Usage: " << name << " -c CAR_RATIO [<option(s)> VALUES]\n"
 		<< "Options:\n"
+		<< "\t-a,--animate\t\tAnimation mode"
 		<< "\t-h,--help\t\tShow this help message\n"
 		<< "\t-c,--carratio\t\tSpecify the car ratio\n"
 		<< "\t-T,--trials \t\tSpecify the number of trials (Default: " << TRIALS << ")\n"
@@ -126,6 +127,9 @@ int parser(int argc, char* argv[]){
 				return 1;
 			}
 		}
+        else if (arg == "-a" || arg == "--animate") {
+            ANIMATE = true;
+		}
 	}
 	return 0;
 }
@@ -133,20 +137,34 @@ int parser(int argc, char* argv[]){
 int main(int argc, char* argv[]){
 	int status = parser(argc, argv);
 	if (status == 1) return 1;
-
-	vector<float> densities(19);
-	vector<string> runmsg(19, "Not Done");
-	double first = 0.05;
-	for (int i = 0; i < 19; i++){
-		densities[i] = first;
-		first += 0.05;
+	if (ANIMATE == true){
+        int status = parser(argc, argv);
+        if (status == 1) return 1;
+        printf("Enter the desired density parameter:");
+        float density;
+        scanf("%f", &density);
+        cout << density << car_ratio<<endl;
+        if (LOAD_SEED == false) seed = time(NULL) * 123456789;
+        animate(density, car_ratio, seed);
+        char anim_py[100];
+        sprintf(anim_py, "python animation.py --carratio %.2f --density %.2f --lanes %d", car_ratio, density, LANES);
+        system(anim_py);
 	}
-		omp_set_num_threads(2);
-		#pragma omp parallel for
-		for (int i = 0; i < densities.size(); i++){
-			if (LOAD_SEED == false) seed = time(NULL) * 123456789;
-			runmsg[i] = start(densities[i], car_ratio, seed);
-			printstat(runmsg, densities, car_ratio);
-		}
-	return 0;
+    else{
+    	vector<float> densities(19);
+        vector<string> runmsg(19, "Not Done");
+        double first = 0.05;
+        for (int i = 0; i < 19; i++){
+            densities[i] = first;
+            first += 0.05;
+        }
+            omp_set_num_threads(2);
+            #pragma omp parallel for
+            for (int i = 0; i < densities.size(); i++){
+                if (LOAD_SEED == false) seed = time(NULL) * 123456789;
+                runmsg[i] = start(densities[i], car_ratio, seed);
+                printstat(runmsg, densities, car_ratio);
+            }
+    }
+    return 0;
 }
