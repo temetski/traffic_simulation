@@ -171,13 +171,8 @@ void vehicle::change_lane(road_arr& road){
 	changed_lane = false;
 }
 
-vector<short> vehicle::stats(void){
-	vector<short> arr(2);
-	arr = { vel, size };
-	return arr;
-}
 
-vector<short> vehicle::pos_data(void){
+vector<short> vehicle::stats(void){
 	vector<short> arr(4);
 	arr = { pos, lane, vel, size };
 	return arr;

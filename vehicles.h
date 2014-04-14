@@ -41,7 +41,6 @@ public:
 	void move(road_arr& road);
 	void change_lane(road_arr& road);
 	vector<short> stats(void);
-	vector<short> pos_data(void);
 };
 
 class car : public vehicle{

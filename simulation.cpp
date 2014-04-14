@@ -34,10 +34,8 @@ void Simulation::evolve(float density, float car_ratio){
         if (t >= TIMESTEPS-DATAPOINTS){
 			for (vehicle vehicle : vehicle_array) {
 				vehicle_stats.push_back(vehicle.stats());
-				vehicle_pos_data.push_back(vehicle.pos_data());
 			}
             vehicle_data.push_back(vehicle_stats);
-			vehicle_positions.push_back(vehicle_pos_data);
             vector<vector<short> >().swap(vehicle_stats);
         }
         random_shuffle(permutation.begin(), permutation.end());
@@ -133,7 +131,7 @@ void animate(float density, float car_ratio, time_t seed){
 	sprintf(_filename, "Animation_CR.%.2f_D.%.2f.h5", car_ratio, density);
 	Simulation *traffic = new Simulation;
 	traffic->evolve(density, car_ratio);
-	POS_DATA = traffic->vehicle_positions;
+	POS_DATA = traffic->vehicle_data;
 	delete traffic;
 	hd5data(POS_DATA, density, car_ratio, 0, _filename, seed);
 }
