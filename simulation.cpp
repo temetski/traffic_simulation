@@ -59,7 +59,7 @@ void Simulation::initialize(float density, float car_ratio){
         for (counter = 0; counter < number_car; counter++){
             int iterations = 0;
             pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
-			if (lane_choice.size()>2) lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
+			if (lane_choice.size()>=2) lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
 			else lane = lane_choice[0];
             while (!place_check(pos, lane, car().length, car().width, road, ROADLENGTH)){
 				pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
