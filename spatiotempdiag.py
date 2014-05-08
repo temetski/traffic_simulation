@@ -63,7 +63,7 @@ def tempo_diagram(vehicledata, ratio, density, lanes):
         STD = road[:,0,:]
         grid = fig.add_subplot(111)
         grid.imshow(STD, cmap="binary", interpolation="nearest")
-        grid.set_title(r"$L_%s$" % i)
+        grid.set_title(r"$l_%s$" % i)
         grid.set_xticklabels([])
     plt.savefig('CR.%.2f.D%.2f.png' % (ratio, density), bbox_inches="tight")
 
