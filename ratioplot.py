@@ -7,6 +7,7 @@ Created on Sun Mar 02 13:31:26 2014
 """
 import matplotlib
 matplotlib.use("Agg")
+matplotlib.rcParams.update({'axes.labelsize': 17})
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as image
@@ -82,10 +83,11 @@ def plot(med1, med2):
                 label=r"$\gamma = %.2f$" % label)
     plt.legend(loc=2)
     ax.set_xlabel('road density')
-    ax.set_ylabel('number of exiting vehicles')
+    ax.set_ylabel('ratio of performance')
 #    ax.set_ylim(0, 2000)
-    ax.set_title((med1 + med2).replace("_", " "))
+#    ax.set_title((med1 + med2).replace("_", " "))
     ax.set_xlim(0, 1)
+    ax.set_ylim(0, 2)
     ax.set_xticks(DENSITIES[1::2])
     plt.grid()
     fig.savefig('ratiothroughput_%s.png' % (med1[:-1] + med2[:-1]), bbox_inches='tight', dpi=300)

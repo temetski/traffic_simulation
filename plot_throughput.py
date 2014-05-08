@@ -7,7 +7,10 @@ Created on Mon Jul 22 00:18:38 2013
 """
 import numpy as np
 import matplotlib
+from load_params import *
 matplotlib.use("Agg")
+matplotlib.rcParams.update({'font.size': 15})
+matplotlib.rcParams.update({'axes.labelsize': 17})
 import matplotlib.pyplot as plt
 import glob
 import re
@@ -17,11 +20,11 @@ import h5py
 
 
 #REAL_LANES = 4
-ROADLENGTH = 50
+ROADLENGTH = 100
 TRIALS = 50
 
 #AREA = 1 * (REAL_LANES) * ROADLENGTH
-SPEED = 0
+SPEED = -2
 SIZE = -1
 LAST = -1
 
@@ -79,38 +82,52 @@ if __name__ == "__main__":
             THROUGHPUT[x][y] = flux
             VELOCITIES[x][y] = [velocities(trial) for trial in data]
     MEDIANS = np.median(THROUGHPUT, axis=2) # Median for trials in car ratios
+
     fig = plt.figure(1)
     ax = fig.add_subplot(111)
+    bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.9)
     for ydata, median, label, i in zip(THROUGHPUT, MEDIANS, RATIOS, range(len(RATIOS))):
         color = "%s" % (i*0.15)
-        ax.plot(DENSITIES, median, color=color, linewidth=3)
+        ax.plot(DENSITIES, median, color=color, linewidth=3,
+                label=r"$\gamma = %.2f$" % label)
         bp = ax.boxplot(ydata, positions=DENSITIES, widths=0.02)
         plt.setp(bp['boxes'], color=color)
         plt.setp(bp['whiskers'], color=color)
         plt.setp(bp['fliers'], color=color)
         plt.setp(bp['medians'], color=color)
-    ax.set_xlabel('road density')
-    ax.set_ylabel('number of exiting vehicles')
-    ax.set_title(DIRNAME)
+        plt.legend()
+    ax.text(0.02, 0.97, r"$p_{\lambda} = %.2f, l_v = %d$" % 
+            (LANE_CHANGE_PROB, VIRTUAL_LANES),  ha="left", va="top",
+            size=20, bbox=bbox_props, transform=ax.transAxes)
+    ax.set_xlabel(r'Road density ($\rho$)')
+    ax.set_ylabel('Throughput')
+#    ax.set_title(DIRNAME.replace("_", " "))
+    ax.set_ylim(0, 2000)
     ax.set_xlim(0, 1)
     ax.set_xticks(DENSITIES[1::2])
-    fig.savefig('throughput_%s.png' % DIRNAME, bbox_inches='tight')
+    plt.grid()
+    fig.savefig('throughput_%s.png' % DIRNAME, bbox_inches='tight', dpi=300)
     ax.cla()
+
 
     fig2 = plt.figure(2)
     ax2 = fig2.add_subplot(111)
     for ydata, median, label, i in zip(VELOCITIES, MEDIANS, RATIOS, range(len(RATIOS))):
         color = "%s" % (i*0.15)
-        ax2.plot(DENSITIES, np.median(ydata, axis=1), color=color, linewidth=3)
+        ax2.plot(DENSITIES, np.median(ydata, axis=1), 
+                 color=color, linewidth=3,
+                 label=r"$\gamma = %.2f$" % label)
         bp = ax2.boxplot(ydata, positions=DENSITIES, widths=0.02)
         plt.setp(bp['boxes'], color=color)
         plt.setp(bp['whiskers'], color=color)
         plt.setp(bp['fliers'], color=color)
         plt.setp(bp['medians'], color=color)
+        plt.legend()
     ax2.set_xlabel('road density')
     ax2.set_ylabel('median average velocity')
-    ax2.set_title(DIRNAME)
+#    ax2.set_title(DIRNAME.replace("_", " "))
     ax2.set_xlim(0, 1)
     ax2.set_xticks(DENSITIES[1::2])
-    fig2.savefig('velocities_%s.png' % DIRNAME, bbox_inches='tight')
+    plt.grid()
+    fig2.savefig('velocities_%s.png' % DIRNAME, bbox_inches='tight', dpi=300)
     ax2.cla()
