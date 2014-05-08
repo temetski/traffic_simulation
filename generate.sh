@@ -6,7 +6,7 @@ export PATH=`pwd`:$PATH
 
 TRIALS=50
 TIMESTEPS=3000
-ROADLENGTH=50
+ROADLENGTH=100
 
 function run_sim {
 	traffic_simulation -c $car_ratio -T $TRIALS -t $TIMESTEPS -R $ROADLENGTH -r $REAL_LANES -v $VIRTUAL_LANES -L $LANE_CHANGE
@@ -16,7 +16,7 @@ function Two_Real {
         REAL_LANES=4
         VIRTUAL_LANES=0
         LANE_CHANGE=1
-        DIR=Two_Real
+        DIR='lanechange_'$LANE_CHANGE'_virt_'$VIRTUAL_LANES
         mkdir $DIR
         cd $DIR
 

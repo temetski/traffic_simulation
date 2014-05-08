@@ -11,6 +11,14 @@ function Two_Real {
 	cd ..
 }
 
+function Two_Real_NoLaneChange {
+        DIR=Two_Real_NoLaneChange
+        cd $DIR
+        plot_throughput.py
+        cd ..
+}
+
+
 function Single_Lane {
 	mkdir Single_Lane
 	cd Single_Lane
@@ -28,4 +36,4 @@ function Two_Virtual {
 Two_Virtual
 Two_Real
 Single_Lane
-
+Two_Real_NoLaneChange
