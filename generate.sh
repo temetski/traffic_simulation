@@ -25,33 +25,6 @@ function useparams {
         cd ..
 }
 
-function Two_Real_NoLaneChange {
-	VIRTUAL_LANES=0
-	LANE_CHANGE=0
-	DIR='lanechange_'$LANE_CHANGE'_virt_'$VIRTUAL_LANES
-	mkdir $DIR
-	cd $DIR
-	for car_ratio in `seq 0 0.05 1`;
-        do
-                run_sim
-        done
-        cd ..
-}
-
-
-function Two_Virtual {
-	VIRTUAL_LANES=1
-	LANE_CHANGE=1
-    DIR='lanechange_'$LANE_CHANGE'_virt_'$VIRTUAL_LANES
-	mkdir $DIR
-	cd $DIR
-	for car_ratio in `seq 0 0.05 1`;
-	do
-		run_sim
-	done
-	cd ..
-}
-
 useparams 0 0.8
 useparams 0 0
 useparams 1 0.8
