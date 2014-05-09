@@ -4,36 +4,17 @@
 
 export PATH=`pwd`:$PATH
 
-function Two_Real {
-	DIR=Two_Real
-	cd $DIR
+function plot {
+    VIRTUAL_LANES=$1
+    LANE_CHANGE=$2
+    DIR='lanechange_'$LANE_CHANGE'_virt_'$VIRTUAL_LANES
+    echo "Processing folder: "$DIR
+    cd $DIR
 	plot_throughput.py
 	cd ..
 }
 
-function Two_Real_NoLaneChange {
-        DIR=Two_Real_NoLaneChange
-        cd $DIR
-        plot_throughput.py
-        cd ..
-}
-
-
-function Single_Lane {
-	mkdir Single_Lane
-	cd Single_Lane
-	plot_throughput.py
-	cd ..
-}
-
-function Two_Virtual {
-	mkdir Two_Car_Lanes_Virtual
-	cd Two_Car_Lanes_Virtual
-	plot_throughput.py
-	cd ..
-}
-
-Two_Virtual
-Two_Real
-Single_Lane
-Two_Real_NoLaneChange
+plot 0 0.0
+plot 0 0.8
+plot 1 0.8
+#plot 0
