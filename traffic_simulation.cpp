@@ -21,7 +21,7 @@ static void show_usage(string name)
 {
 	std::cerr << "Usage: " << name << " -c CAR_RATIO [<option(s)> VALUES]\n"
 		<< "Options:\n"
-		<< "\t-a,--animate\t\tAnimation mode"
+		<< "\t-a,--animate\t\tAnimation mode\n"
 		<< "\t-h,--help\t\tShow this help message\n"
 		<< "\t-c,--carratio\t\tSpecify the car ratio\n"
 		<< "\t-T,--trials \t\tSpecify the number of trials (Default: " << TRIALS << ")\n"
@@ -29,7 +29,8 @@ static void show_usage(string name)
 		<< "\t-t,--timesteps \t\tSpecify the number of timesteps (Default: " << TIMESTEPS << ")\n"
 		<< "\t-r,--reallanes \t\tSpecify the number of real lanes (Default: " << REAL_LANES << ")\n"
 		<< "\t-v,--virtuallanes \tSpecify the number of virtual lanes (Default: " << VIRTUAL_LANES << ")\n"
-		<< "\t-L,--lanechange \tToggle lane changing (Default: " << LANE_CHANGE << ")\n"
+		<< "\t-L,--lanechange \tSet lane changing probability (Default: " << LANE_CHANGE_PROB << ")\n"
+		<< "\t-s,--slowdown \tSet random slowdown probability (Default: " << SLOWDOWN << ")\n"
 		<< "\t--loadseed \t\tSet seed state (Default: " << LOAD_SEED << ")\n"
 		<< endl;
 }
@@ -110,10 +111,10 @@ int parser(int argc, char* argv[]){
 		else if ((arg == "-L") || (arg == "--lanechange")) {
 			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
 				i++;
-				LANE_CHANGE = atoi(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+				LANE_CHANGE_PROB = atof(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
 			}
 			else {
-				std::cerr << "--lanechange option requires one argument (0 or 1)." << std::endl;
+				std::cerr << "--lanechange option requires one argument (0 to 1)." << std::endl;
 				return 1;
 			}
 		}
@@ -124,6 +125,16 @@ int parser(int argc, char* argv[]){
 			}
 			else {
 				std::cerr << "--loadseed option requires one argument (0 or 1)." << std::endl;
+				return 1;
+			}
+		}
+		else if (arg == "--slowdown" || arg == "-s") {
+			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
+				i++;
+				SLOWDOWN = atof(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+			}
+			else {
+				std::cerr << "--slowdown option requires one argument (0 to 1)." << std::endl;
 				return 1;
 			}
 		}
