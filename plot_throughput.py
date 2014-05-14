@@ -7,7 +7,9 @@ Created on Mon Jul 22 00:18:38 2013
 """
 import numpy as np
 import matplotlib
-from load_params import *
+from load_params import ROADLENGTH, TRIALS, REAL_LANES, \
+                        VIRTUAL_LANES, SLOWDOWN
+LANE_CHANGE_PROB = 0.8
 matplotlib.use("Agg")
 matplotlib.rcParams.update({'font.size': 15})
 matplotlib.rcParams.update({'axes.labelsize': 17})
@@ -36,7 +38,7 @@ def throughput(dist_trial):
 
 def velocities(velo_trial):
     """Computes the average velocity of one trial of the simulation"""
-    return np.average([vehicles[SPEED] for vehicles in velo_trial[LAST]])
+    return np.average([vehicles[:,SPEED] for vehicles in velo_trial])
 
 
 def load(_ratio, _density):
@@ -96,12 +98,11 @@ if __name__ == "__main__":
         plt.setp(bp['fliers'], color=color)
         plt.setp(bp['medians'], color=color)
         plt.legend()
-    ax.text(0.02, 0.97, r"$p_{\lambda} = %.2f, l_v = %d$" % 
+    ax.text(0.02, 0.97, r"$p_{\lambda} = %.2f$, $l_v = %d$" % 
             (LANE_CHANGE_PROB, VIRTUAL_LANES),  ha="left", va="top",
             size=20, bbox=bbox_props, transform=ax.transAxes)
     ax.set_xlabel(r'Road density ($\rho$)')
     ax.set_ylabel('Throughput')
-#    ax.set_title(DIRNAME.replace("_", " "))
     ax.set_ylim(0, 2000)
     ax.set_xlim(0, 1)
     ax.set_xticks(DENSITIES[1::2])
@@ -125,7 +126,6 @@ if __name__ == "__main__":
         plt.legend()
     ax2.set_xlabel('road density')
     ax2.set_ylabel('median average velocity')
-#    ax2.set_title(DIRNAME.replace("_", " "))
     ax2.set_xlim(0, 1)
     ax2.set_xticks(DENSITIES[1::2])
     plt.grid()
