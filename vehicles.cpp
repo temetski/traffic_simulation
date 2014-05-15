@@ -111,8 +111,8 @@ int vehicle::aveheadway(vector<int>& headwaycount){
 		for (unsigned i = 0; i < headwaycount.size() - 1; i++){
 			headwaycount[i] = headwaycount[i] + headwaycount[i + 1];
 		}
-		center = distance(headwaycount.begin(), max_element(headwaycount.begin(), headwaycount.end()));
 	}
+	center = distance(headwaycount.begin(), max_element(headwaycount.begin(), headwaycount.end()));
 	return center;
 }
 
