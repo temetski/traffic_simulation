@@ -106,13 +106,14 @@ vector<int> vehicle::headway(road_arr& road){
 }
 
 int vehicle::aveheadway(vector<int>& headwaycount){
-	int center = (headwaycount.size() - 1) / 2;
+	int center;// = (headwaycount.size() - 1) / 2;
 	if (width > 1){
 		for (unsigned i = 0; i < headwaycount.size() - 1; i++){
 			headwaycount[i] = headwaycount[i] + headwaycount[i + 1];
 		}
 	}
 	center = distance(headwaycount.begin(), max_element(headwaycount.begin(), headwaycount.end()));
+//    }
 	return center;
 }
 
@@ -133,42 +134,42 @@ void vehicle::change_lane(road_arr& road){
 	center = (headcount.size() - 1) / 2;
 	_where = aveheadway(headcount);
 	/* Cars that have a higher chance to continue turning in the same direction*/
-	if (lane > prev_lane) chance_right = 0.7;
-	if (lane < prev_lane || lane == LANES - width) chance_right = 0.3;
-	else chance_right = 0.5*LANE_CHANGE_PROB;
+	//if (lane > prev_lane) chance_right = 0.7*LANE_CHANGE_PROB;
+	//if (lane < prev_lane || lane == LANES - width) chance_right = 0.3*LANE_CHANGE_PROB;
+	//else chance_right = 0.5*LANE_CHANGE_PROB;
 	probability = gsl_rng_uniform(generator);
-	if (lane == LANES - width && vel>2 && VIRTUAL_LANES){
-		if (check_lane(road, LEFT)){
-			remove(road);
-			lane += LEFT;
-			place(road);
-			prev_lane = lane;
-			changed_lane = true;
-		}
-	}
-	if (_distance <= vel && vel < V_MAX - 1){
-		if (_where < center &&
-			check_lane(road, LEFT) &&
-			probability > LANE_CHANGE_PROB - chance_right){
-			remove(road);
-			lane += LEFT;
-			place(road);
-			prev_lane = lane;
-			changed_lane = true;
-		}
-		if (_where > center &&
-			check_lane(road, RIGHT) &&
-			probability < chance_right){
-			remove(road);
-			lane += RIGHT;
-			place(road);
-			prev_lane = lane;
-			changed_lane = true;
-		}
-		else changed_lane = false;
-	}
-	prev_lane = lane;
-	changed_lane = false;
+    if (probability <= LANE_CHANGE_PROB){
+	    if ( (lane == LANES - width) && (vel > 2) && VIRTUAL_LANES ){
+		    if ( check_lane(road, LEFT) ){
+			    remove(road);
+			    lane += LEFT;
+			    place(road);
+			    prev_lane = lane;
+			    changed_lane = true;
+		    }
+	    }
+	    else if ( (_distance <= vel) && (vel < V_MAX - 1) ){
+		    if ( (_where < center) && check_lane(road, LEFT) ){
+			    remove(road);
+			    lane += LEFT;
+			    place(road);
+			    prev_lane = lane;
+			    changed_lane = true;
+		    }
+		    else if ( (_where > center) && check_lane(road, RIGHT) ){
+			    remove(road);
+			    lane += RIGHT;
+			    place(road);
+			    prev_lane = lane;
+			    changed_lane = true;
+		    }
+		    else changed_lane = false;
+	    }
+    }
+    else {
+	    prev_lane = lane;
+	    changed_lane = false;
+    }
 }
 
 
