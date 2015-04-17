@@ -63,7 +63,8 @@ void vehicle::decelerate(road_arr& road) {
 
 void vehicle::random_slow(void){
 	double random = gsl_rng_uniform(generator);
-	if (random < SLOWDOWN && vel > 0) vel -= 1;
+	if (random < SLOWDOWN && vel > 0) {vel -= 1; pslow=1;}
+	else pslow=0;
 }
 
 void vehicle::move(road_arr& road){
@@ -175,7 +176,7 @@ void vehicle::change_lane(road_arr& road){
 
 vector<short> vehicle::stats(void){
 	vector<short> arr(4);
-	arr = { pos, lane, vel, size };
+	arr = { pos, lane, vel, size, pslow };
 	return arr;
 }
 
