@@ -22,6 +22,7 @@ void Simulation::evolve(float density, float car_ratio){
                 vehicle_array[i].change_lane(road);
                 vehicle_array[i].decelerate(road);
                 if (!vehicle_array[i].changed_lane) vehicle_array[i].random_slow();
+                else vehicle_array[i].pslow = 0;
             }
             else{
                 vehicle_array[i].decelerate(road);
@@ -53,7 +54,7 @@ void Simulation::initialize(float density, float car_ratio){
     for (int i=0; i < LANES; i++) this->road.push_back(vector<int>(ROADLENGTH,0));
     vector<vehicle> car_array;
     /* Initializes Cars */
-    if (car_ratio>0){
+    if (car_ratio > 0){
         vector<int> lane_choice(LANES / car().width);
         for (unsigned i = 0; i < lane_choice.size(); i++) lane_choice[i] = i * 2;
         for (counter = 0; counter < number_car; counter++){
@@ -144,7 +145,7 @@ void printstat(vector<string> status, vector<float> densities, float car_ratio){
 #endif
 	system(clear);
 	printf("plambda=%f, p_f=%f \n", LANE_CHANGE_PROB, SLOWDOWN);
-	for (int i = 0; i < 19; i++){
+	for (int i = 0; i < 99; i++){
 		cout << "Density::" << densities[i] << "\t\tCarRatio::" << car_ratio << "\t\tStatus:" << status[i] << endl;
 	}
 }
