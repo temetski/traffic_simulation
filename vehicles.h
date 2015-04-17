@@ -22,7 +22,7 @@ typedef vector<vector<int> > road_arr;
 
 class vehicle {
 public:
-	short pos, lane, prev_lane = lane, _distance, width, length, marker, vel, size;
+	short pos, lane, prev_lane = lane, _distance, width, length, marker, vel, size, pslow=0;
 	bool changed_lane = false, exit_road = false;
 	double chance_right;
 
