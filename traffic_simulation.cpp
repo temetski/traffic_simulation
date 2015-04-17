@@ -162,20 +162,20 @@ int main(int argc, char* argv[]){
         system(anim_py);
 	}
     else{
-    	vector<float> densities(19);
-        vector<string> runmsg(19, "Not Done");
-        double first = 0.05;
-        for (int i = 0; i < 19; i++){
+    	vector<float> densities(99);
+        vector<string> runmsg(99, "Not Done");
+        double first = 0.01;
+        for (int i = 0; i < 99; i++){
             densities[i] = first;
-            first += 0.05;
+			first += 0.01;
         }
-            omp_set_num_threads(2);
-            #pragma omp parallel for
-            for (int i = 0; i < densities.size(); i++){
-                if (LOAD_SEED == false) seed = time(NULL) * 123456789;
-                runmsg[i] = start(densities[i], car_ratio, seed);
-                printstat(runmsg, densities, car_ratio);
-            }
+		omp_set_num_threads(omp_get_num_procs());
+		#pragma omp parallel for
+		for (int i = 0; i < densities.size(); i++){
+			if (LOAD_SEED == false) seed = 123456789;
+			runmsg[i] = start(densities[i], car_ratio, seed);
+			printstat(runmsg, densities, car_ratio);
+		}
     }
     return 0;
 }
