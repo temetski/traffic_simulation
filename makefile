@@ -1,8 +1,8 @@
 CC = gcc
 CPP = g++
 
-CFLAGS  = -g -Wall -c -I/usr/include -fopenmp
-LFLAGS = -Wall -g -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib
+CFLAGS  = -g -Wall -O2 -c -I/usr/include -fopenmp
+LFLAGS = -Wall -g -flto -O2 -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib
 # the build target executable:
 SIMULATION = traffic_simulation
 ANIMATION = traffic_animation

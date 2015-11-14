@@ -4,22 +4,23 @@
 @author: Damian"""
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")
-#matplotlib.rcParams.update({'font.size': 15})
+matplotlib.rcParams.update({'font.size': 15})
+matplotlib.rcParams.update({'axes.labelsize': 17})
 import matplotlib.pyplot as plt
 import glob
 import re
 import os
 from subprocess import call
 import h5py
-
+from load_params import *
 
 #REAL_LANES = 4
-ROADLENGTH = 100
-TRIALS = 50
+#VIRTUAL_LANES
+#SLOWDOWN
+#LANE_CHANGE_PROB
+#ROADLENGTH = 100
+#TRIALS = 50
 TIMESTEPS = 1000
-
-#AREA = 1 * (REAL_LANES) * ROADLENGTH
 SPEED = -2
 SIZE = -1
 LAST = -1
@@ -54,6 +55,7 @@ def count(vehicle, intervals):
             count = 0
     return intervals
 
+
 def main(ratio, density):
     DIRNAME = os.path.split(os.getcwd())[1]
     data = load(ratio, density)
@@ -74,12 +76,11 @@ def main(ratio, density):
     ax_inset.set_xlim(min(x), max(x))
     ax_inset.set_title("CDF")
 #    plt.setp(ax_inset, xticks=[], yticks=[])
-    ax.set_title(DIRNAME.replace("_", " ") + "\t$\gamma=%.2f$" % ratio)
-    fig.savefig('stophist_CR.%.2f.D%.2f.png' % (ratio, density),
+#    ax.set_title(DIRNAME.replace("_", " ") + "\t$\kappa=%.2f$" % ratio)
+    fig.savefig('stophist_CR.%.2f.D%.2f.pdf' % (ratio, density),
                 bbox_inches='tight')
     plt.clf()
-    plt.loglog(x[:-1], y)
-    plt.savefig("test.png")
+
     
 
 if __name__ == "__main__":

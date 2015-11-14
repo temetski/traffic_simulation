@@ -14,7 +14,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from PIL import Image
 from subprocess import call
 import h5py
-
+from load_params import VIRTUAL_LANES, REAL_LANES
 
 
 def load(_ratio, _density):
@@ -56,7 +56,7 @@ def tempo_diagram(vehicledata, ratio, density, lanes):
         for i in range(lanes):
             STD = road[:,i,:]
             grid[i].imshow(STD, cmap="binary", interpolation="nearest")
-            grid[i].set_title(r"$L_%s$" % i)
+            grid[i].set_title(r"$l_%s$" % i)
             grid[i].set_xticklabels([])
     else:
         fig = plt.figure(1)
@@ -65,10 +65,12 @@ def tempo_diagram(vehicledata, ratio, density, lanes):
         grid.imshow(STD, cmap="binary", interpolation="nearest")
         grid.set_title(r"$l_%s$" % i)
         grid.set_xticklabels([])
-    plt.savefig('CR.%.2f.D%.2f.png' % (ratio, density), bbox_inches="tight")
+    plt.savefig('CR.%.2f.D%.2f.V%s.pdf' % (ratio, density, VIRTUAL_LANES),
+                bbox_inches="tight")
 
 
-def main(ratio, density, lanes):
+def main(ratio, density):
+    lanes = REAL_LANES + VIRTUAL_LANES
     pos = 0
     lane = 1
     size = 3
@@ -86,8 +88,8 @@ def main(ratio, density, lanes):
         fig.savefig("%s" % t, dpi=150)
         ax.cla()
         plt.close(fig)
-    call("avconv -f image2 -i %d.png -r 5 -vcodec libx264 -b 800k out.mp4", shell=True)
-    call("rm [0-9]*.png", shell=True)
+    call("avconv -f image2 -i %d.pdf -r 5 -vcodec libx264 -b 800k out.mp4", shell=True)
+    call("rm [0-9]*.pdf", shell=True)
     return 0'''
 
 
@@ -96,11 +98,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Generates animated simlation")
     parser.add_argument("--carratio", help="Specify car ratio", type=float)
     parser.add_argument("--density", help="Specify density", type=float)
-    parser.add_argument("--lanes", help="Specify lanes", type=int)
     args = parser.parse_args()
     if (args.carratio != None and
-         args.density != None and
-         args.lanes != None):
-        main(args.carratio, args.density, args.lanes)
+         args.density != None):
+        main(args.carratio, args.density)
     else:
         parser.print_help()

@@ -15,7 +15,7 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 from PIL import Image
 from subprocess import call
 import h5py
-
+import sys
 
 
 def load(_ratio, _density):
@@ -66,40 +66,107 @@ def tempo_diagram(vehicledata, ratio, density, lanes):
         grid.imshow(STD, cmap="binary", interpolation="nearest")
         grid.set_title(r"$L_%s$" % i)
         grid.set_xticklabels([])
-    plt.savefig('CR.%.2f.D%.2f.png' % (ratio, density), bbox_inches="tight")
+    plt.savefig('CR.%.2f.D%.2f.pdf' % (ratio, density), bbox_inches="tight")
 
 
 def plot(med1, med2):
-    DENSITIES = np.arange(0.05, 1, 0.05)
+    os.chdir(med1)
+    from load_params import VIRTUAL_LANES, LANE_CHANGE_PROB
+    os.chdir('..')
+    DENSITIES = np.arange(0.01, 1, 0.01)
+    _density_ = np.arange(0.05, 1,0.05)
     RATIOS = np.array([0, 0.25, 0.5, 0.75, 1])
+    ls = [(), (15,2), "-", "--"]
     fig = plt.figure(1)
     ax = fig.add_subplot(111)
-    med1dat = np.load(med1+filename)['medians']
-    med2dat = np.load(med2+filename)['medians']
+    bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.9)
+    med1dat = np.median(np.load(med1+filename)['THROUGHPUT'], axis=2)
+    std1dat = np.std(np.load(med1+filename)['THROUGHPUT'], axis=2)
+    med2dat = np.median(np.load(med2+filename)['THROUGHPUT'], axis=2)
+    std2dat = np.std(np.load(med1+filename)['THROUGHPUT'], axis=2)
     ratio = med1dat/med2dat
+    stdratio = np.sqrt((std1dat/med1dat)**2 + (std2dat/med2dat)**2)
     for median, label, i in zip(ratio, RATIOS, range(len(RATIOS))):
         color = "%s" % (i*0.15)
-        ax.plot(DENSITIES, median, color=color, linewidth=3,
-                label=r"$\gamma = %.2f$" % label)
+#        ax.plot(DENSITIES, median, color=color, linewidth=3,
+#                label=r"$\kappa = %.2f$" % label, dashes=ls[i%2])
+        ax.errorbar(DENSITIES, median, color=color, linewidth=2,
+                label=r"$\kappa = %.2f$" % label, dashes=ls[i%2],
+                yerr=median*stdratio[i])
+
     plt.legend(loc=2)
-    ax.set_xlabel('road density')
-    ax.set_ylabel('ratio of performance')
-#    ax.set_ylim(0, 2000)
-#    ax.set_title((med1 + med2).replace("_", " "))
+    ax.set_xlabel(r'Road density ($\rho$)')
+    ax.set_ylabel('Ratio of throughput')
+    ax.text(0.98, 0.97, r"$p_{\lambda} = %.2f$, $W_v = %d$" %
+            (LANE_CHANGE_PROB, VIRTUAL_LANES),  ha="right", va="top",
+            size=20, bbox=bbox_props, transform=ax.transAxes)
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, 2)
-    ax.set_xticks(DENSITIES[1::2])
+    ax.set_ylim(0, 2.5)
+    ax.set_xlim(0, 1)
+    ax.set_xticks(_density_[1::2])
     plt.grid()
-    fig.savefig('ratiothroughput_%s.png' % (med1[:-1] + med2[:-1]), bbox_inches='tight', dpi=300)
+    if med2 == base:
+        fig.savefig('images/ratio_%s.pdf' % med1, bbox_inches='tight', dpi=300)
+    else:
+        fig.savefig('images/ratio_%s%s.pdf' % (med1, med2),
+                    bbox_inches='tight', dpi=300)
     ax.cla()
+    del sys.modules['load_params']
+
+def plot2(med1, med2):
+    os.chdir(med1)
+    from load_params import VIRTUAL_LANES, LANE_CHANGE_PROB
+    os.chdir('..')
+    DENSITIES = np.arange(0.01, 1, 0.01)
+    _density_ = np.arange(0.05, 1,0.05)
+    RATIOS = np.array([0, 0.25, 0.5, 0.75, 1])
+    ls = [(), (15,2), "-", "--"]
+    fig = plt.figure(1)
+    ax = fig.add_subplot(111)
+    bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.9)
+    med1dat = np.median(np.load(med1+filename)['THROUGHPUT'], axis=2)
+    std1dat = np.std(np.load(med1+filename)['THROUGHPUT'], axis=2)
+    med2dat = np.median(np.load(med2+filename)['THROUGHPUT'], axis=2)
+    std2dat = np.std(np.load(med1+filename)['THROUGHPUT'], axis=2)
+    ratio = med1dat/med2dat
+    stdratio = np.sqrt((std1dat/med1dat)**2 + (std2dat/med2dat)**2)
+    for median, label, i in zip(ratio, RATIOS, range(len(RATIOS))):
+        color = "%s" % (i*0.15)
+#        ax.plot(DENSITIES, median, color=color, linewidth=3,
+#                label=r"$\kappa = %.2f$" % label, dashes=ls[i%2])
+        ax.errorbar(DENSITIES, median, color=color, linewidth=2,
+                label=r"$\kappa = %.2f$" % label, dashes=ls[i%2],
+                yerr=median*stdratio[i])
+    plt.plot(DENSITIES, [1.25]*len(DENSITIES), color='r', linewidth=2, linestyle='--')
+    plt.legend(loc=2)
+    ax.set_xlabel(r'Road density ($\rho$)')
+    ax.set_ylabel('Ratio of throughput')
+    ax.text(0.98, 0.97, r"$p_{\lambda} = %.2f$" %
+            (LANE_CHANGE_PROB),  ha="right", va="top",
+            size=20, bbox=bbox_props, transform=ax.transAxes)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 2.5)
+    ax.set_xlim(0, 1)
+    ax.set_xticks(_density_[1::2])
+    plt.grid()
+    if med2 == base:
+        fig.savefig('images/ratio_%s.pdf' % med1, bbox_inches='tight', dpi=300)
+    else:
+        fig.savefig('images/ratio_%s%s.pdf' % (med1, med2),
+                    bbox_inches='tight', dpi=300)
+    ax.cla()
+    del sys.modules['load_params']
 
 
 if __name__ == "__main__":
-    real = "Two_Real/"
-    realno = real[:-1]+"_NoLaneChange/"
-    virt = "Two_Car_Lanes_Virtual/"
-    filename = "median_dat.npz"
-    plot(realno, real)
-    plot(realno, virt)
-    plot(real, virt)
+    filename = "/data.npz"
+    import glob
+    import os
+    folders = glob.glob("lanechange_*")
+    base = "lanechange_0.0_virt_0"
+#    for i in folders:
+#        if not i == base:
+#            plot(i, base)
+#    plot(folders[2], folders[1])
+    plot2('lanechange_1.0_virt_1', 'lanechange_1.0_virt_0')
 
