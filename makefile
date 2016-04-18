@@ -1,8 +1,8 @@
 CC = gcc
 CPP = g++
 
-CFLAGS  = -g -Wall -O2 -c -I/usr/include -fopenmp
-LFLAGS = -Wall -g -flto -O2 -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib
+CFLAGS  = -g -Wall -c -I/usr/include -I/usr/include/hdf5/serial -fopenmp
+LFLAGS = -Wall -g -fopenmp -Wl,-rpath='$$ORIGIN' -L/usr/lib -L/usr/lib/x86_64-linux-gnu/hdf5/serial
 # the build target executable:
 SIMULATION = traffic_simulation
 ANIMATION = traffic_animation

@@ -8,7 +8,7 @@
 #ifdef _WIN32
 	#include "cpp/H5Cpp.h"
 #elif __linux
-	#include "H5Cpp.h"
+	#include "hdf5/serial/H5Cpp.h"
 #endif
 #include <vector>
 
