@@ -6,7 +6,10 @@
 *.suo
 *.user
 *.sln.docstates
-
+*.vcxproj
+*.layout
+*.cbp
+*.png
 # Build results
 
 [Dd]ebug/
