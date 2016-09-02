@@ -29,6 +29,7 @@ static void show_usage(string name)
 		<< "\t-t,--timesteps \t\tSpecify the number of timesteps (Default: " << TIMESTEPS << ")\n"
 		<< "\t-r,--reallanes \t\tSpecify the number of real lanes (Default: " << REAL_LANES << ")\n"
 		<< "\t-v,--virtuallanes \tSpecify the number of virtual lanes (Default: " << VIRTUAL_LANES << ")\n"
+		<< "\t-f,--fractional \tSpecify the fraction of lane changing cars (Default: " << FRACTION_LANECHANGE << ")\n"
 		<< "\t-L,--lanechange \tSet lane changing probability (Default: " << LANE_CHANGE_PROB << ")\n"
 		<< "\t-s,--slowdown \tSet random slowdown probability (Default: " << SLOWDOWN << ")\n"
 		<< "\t--loadseed \t\tSet seed state (Default: " << LOAD_SEED << ")\n"
@@ -105,6 +106,16 @@ int parser(int argc, char* argv[]){
 			}
 			else {
 				std::cerr << "--roadlength option requires one argument." << std::endl;
+				return 1;
+			}
+		}
+		else if ((arg == "-f") || (arg == "--fractional")) {
+			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
+				i++;
+				FRACTION_LANECHANGE = atof(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+			}
+			else {
+				std::cerr << "--fractional option requires one argument (0 to 1)." << std::endl;
 				return 1;
 			}
 		}
