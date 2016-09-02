@@ -24,7 +24,7 @@ class vehicle {
 public:
 	short pos, lane, prev_lane = lane, _distance, width, length, marker, vel, size, pslow=0;
 	bool changed_lane = false, exit_road = false;
-	double chance_right;
+	double chance_right, p_lambda=LANE_CHANGE_PROB;
 
 private:
     int _lengthcount;

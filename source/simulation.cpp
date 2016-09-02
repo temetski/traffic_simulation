@@ -97,7 +97,7 @@ void Simulation::initialize(float density, float car_ratio){
     /* Cleanup Operations */
 
     vehicle_array.swap(car_array);
-    if (fraction_lanechange<1.0){
+    if (FRACTION_LANECHANGE<1.0){
         vector<int> permutation(vehicle_array.size());
         for (unsigned i = 0; i < permutation.size(); i++) permutation[i] = i;
         random_shuffle(permutation.begin(), permutation.end());
