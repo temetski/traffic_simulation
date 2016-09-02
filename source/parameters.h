@@ -17,6 +17,7 @@ extern int TRIALS; //-T
 extern double SLOWDOWN;
 extern double LANE_CHANGE_PROB;
 extern double car_ratio;
+extern double FRACTION_LANECHANGE;
 extern bool LANE_CHANGE;
 extern bool LOAD_SEED;
 extern bool ANIMATE;

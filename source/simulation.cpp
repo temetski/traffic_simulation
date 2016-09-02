@@ -97,6 +97,19 @@ void Simulation::initialize(float density, float car_ratio){
     /* Cleanup Operations */
 
     vehicle_array.swap(car_array);
+    if (FRACTION_LANECHANGE<1.0){
+        vector<int> permutation(vehicle_array.size());
+        for (unsigned i = 0; i < permutation.size(); i++) permutation[i] = i;
+        random_shuffle(permutation.begin(), permutation.end());
+        int num_lanechanging = number_vehicles*FRACTION_LANECHANGE;
+        counter = 0;
+        for (int i : permutation){
+            if (counter<=num_lanechanging){
+                vehicle_array[i].p_lambda = 1;
+            }
+            counter++;
+        }
+    }
 }
 
 void BZIP(char* _filename){

@@ -135,11 +135,11 @@ void vehicle::change_lane(road_arr& road){
 	center = (headcount.size() - 1) / 2;
 	_where = aveheadway(headcount);
 	/* Cars that have a higher chance to continue turning in the same direction*/
-	//if (lane > prev_lane) chance_right = 0.7*LANE_CHANGE_PROB;
-	//if (lane < prev_lane || lane == LANES - width) chance_right = 0.3*LANE_CHANGE_PROB;
-	//else chance_right = 0.5*LANE_CHANGE_PROB;
+	//if (lane > prev_lane) chance_right = 0.7*p_lambda;
+	//if (lane < prev_lane || lane == LANES - width) chance_right = 0.3*p_lambda;
+	//else chance_right = 0.5*p_lambda;
 	probability = gsl_rng_uniform(generator);
-    if (probability <= LANE_CHANGE_PROB){
+    if (probability <= p_lambda){
 	    if ( (lane == LANES - width) && (vel > 2) && VIRTUAL_LANES ){
 		    if ( check_lane(road, LEFT) ){
 			    remove(road);
