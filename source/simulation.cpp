@@ -18,7 +18,7 @@ void Simulation::evolve(float density, float car_ratio){
         passed_vehicles = 0;
         for (int i : permutation){
             vehicle_array[i].accelerate();
-            if (vehicle_array.p_lambda > 0){
+            if (vehicle_array[i].p_lambda > 0){
                 vehicle_array[i].change_lane(road);
                 vehicle_array[i].decelerate(road);
                 if (!vehicle_array[i].changed_lane) vehicle_array[i].random_slow();
