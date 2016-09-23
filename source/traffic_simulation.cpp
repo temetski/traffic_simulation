@@ -143,7 +143,7 @@ int parser(int argc, char* argv[]){
 		else if (arg == "--single") {
 			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
 				i++;
-				LOAD_SEED = atoi(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+				density = atof(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
 			}
 			else {
 				std::cerr << "--single option requires one argument (0 to 1)." << std::endl;

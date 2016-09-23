@@ -176,7 +176,7 @@ void vehicle::change_lane(road_arr& road){
 
 vector<short> vehicle::stats(void){
 	vector<short> arr(4);
-	arr = { pos, lane, vel, size, pslow };
+	arr = { pos, lane, vel, size, pslow, p_lambda };
 	return arr;
 }
 
