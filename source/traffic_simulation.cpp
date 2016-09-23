@@ -22,6 +22,7 @@ static void show_usage(string name)
 	std::cerr << "Usage: " << name << " -c CAR_RATIO [<option(s)> VALUES]\n"
 		<< "Options:\n"
 		<< "\t-a,--animate\t\tAnimation mode\n"
+		<< "\t--single\t\tSingle density mode\n"
 		<< "\t-h,--help\t\tShow this help message\n"
 		<< "\t-c,--carratio\t\tSpecify the car ratio\n"
 		<< "\t-T,--trials \t\tSpecify the number of trials (Default: " << TRIALS << ")\n"
@@ -139,6 +140,16 @@ int parser(int argc, char* argv[]){
 				return 1;
 			}
 		}
+		else if (arg == "--single") {
+			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
+				i++;
+				LOAD_SEED = atoi(argv[i]); // Increment 'i' so we don't get the argument as the next argv[i].
+			}
+			else {
+				std::cerr << "--single option requires one argument (0 to 1)." << std::endl;
+				return 1;
+			}
+		}
 		else if (arg == "--slowdown" || arg == "-s") {
 			if (i + 1 < argc) { // Make sure we aren't at the end of argv!
 				i++;
@@ -171,6 +182,13 @@ int main(int argc, char* argv[]){
         char anim_py[100];
         sprintf(anim_py, "python animation.py --carratio %.2f --density %.2f --lanes %d", car_ratio, density, LANES);
         system(anim_py);
+	}
+	if (density != 0){
+        int status = parser(argc, argv);
+        if (status == 1) return 1;
+        cout << density << car_ratio<<endl;
+        if (LOAD_SEED == false) seed = 123456789;
+        start(density, car_ratio, seed);
 	}
     else{
     	vector<float> densities(99);

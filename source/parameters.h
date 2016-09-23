@@ -16,6 +16,7 @@ extern int TIMESTEPS; //-t
 extern int TRIALS; //-T
 extern double SLOWDOWN;
 extern double LANE_CHANGE_PROB;
+extern float density;
 extern double car_ratio;
 extern double FRACTION_LANECHANGE;
 extern bool LANE_CHANGE;

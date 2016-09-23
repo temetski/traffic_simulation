@@ -9,6 +9,7 @@ int TIMESTEPS = 3000; //-t
 int TRIALS = 50; //-T
 double SLOWDOWN = 0.3;
 double LANE_CHANGE_PROB = 0.4;
+float density = 0;
 double car_ratio = 0;
 double FRACTION_LANECHANGE = 1;
 bool LANE_CHANGE = true;
