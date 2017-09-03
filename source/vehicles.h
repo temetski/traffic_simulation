@@ -22,37 +22,42 @@ typedef vector<vector<int> > road_arr;
 
 class vehicle {
 public:
-	short pos, lane, prev_lane = lane, _distance, width, length, marker, vel, size, pslow=0;
-	bool changed_lane = false, exit_road = false;
-	double chance_right, p_lambda=LANE_CHANGE_PROB;
+	short pos, lane, prev_lane, vel, flag_slow;
+	short width, length, marker, size;
+	bool changed_lane;
+	double chance_right, p_lambda;
 
 private:
-    int _lengthcount;
+    int _lengthcount, _distance;
+	void distance(road_arr& road);
 	vector<int> headway(road_arr& road);
 	int aveheadway(vector<int>& headwaycount);
 	bool check_lane(road_arr& road, int direction);
+	void mark(road_arr& road, short marker);
 
 public:
+	vehicle();
 	void place(road_arr& road);
 	void remove(road_arr& road);
 	void accelerate(void);
 	void decelerate(road_arr& road);
 	void random_slow(void);
-	void move(road_arr& road);
+	void move(road_arr& road, short dpos, short dlane);
 	void change_lane(road_arr& road);
 	vector<short> stats(void);
 };
 
 class car : public vehicle{
 public:
-	car() { marker = 2, width = 2, length = 2, size = length*width; }
+	car() { marker = 2, width = 2, length = 2, size = 4; }
 };
 
 class motorcycle : public vehicle{
 public:
-	motorcycle() { marker = 1, width = 1, length = 1, size = length*width; }
+	motorcycle() { marker = 1, width = 1, length = 1, size = 1; }
 };
 
 bool place_check(int pos, int lane, int length, int width,
-	road_arr& road, int ROADLENGTH);
+	road_arr& road, int roadlength);
+
 #endif
