@@ -7,6 +7,7 @@
 
 #include "parameters.h"
 #include "vehicles.h"
+#include "road.h"
 
 struct Simulation{
 public:
@@ -15,6 +16,7 @@ public:
 	vector<int> throughput;
 	vector<vector<vector<short> > > vehicle_data;
 	int number_vehicles;
+	Road *RoadModel;
 
 	Simulation(void) {}
 	~Simulation(void) {}

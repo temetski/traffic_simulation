@@ -136,7 +136,7 @@ int main(int argc, char* argv[]){
 	printf("Enter the desired density parameter:");
 	float density;
 	scanf("%f", &density);
-	cout << density << car_ratio<<endl;
+	// cout << density << car_ratio<<endl;
 	if (LOAD_SEED == false) seed = time(NULL) * 123456789;
 	animate(density, car_ratio, seed);
 	char anim_py[100];

@@ -26,6 +26,7 @@ public:
     road_arr road;
     int roadlength;
 	int lanes;
+	int real_lanes;
 	vector<vehicle> vehicle_array;
 
 private:
@@ -33,10 +34,11 @@ private:
 
 public:
 	Road();
-    Road(int len_road, int num_lanes);
+    Road(int len_road, int num_lanes, int num_virt_lanes=0, bool is_periodic=true);
 	void timestep(void);
 	void print_road();
-	void initialize_periodic(float density, float car_ratio);
+	void initialize_periodic(float density, float car_ratio, float p_lambda);
+	void place_vehicle_type(vehicle* (*veh_type)(), int number, float p_lambda);
 };
 
 #endif

@@ -42,8 +42,8 @@ public:
 	void accelerate(void);
 	void decelerate(road_arr& road);
 	void random_slow(void);
-	void move(road_arr& road, short dpos, short dlane);
-	void change_lane(road_arr& road);
+	void move(road_arr& road, short dpos=0, short dlane=0, bool periodic=true);
+	void change_lane(road_arr& road, int num_virt_lanes=0);
 	vector<short> stats(void);
 };
 

@@ -13,7 +13,7 @@ time_t seed = time(NULL) * 123456789;
 vehicle::vehicle() {
 	pos=0, lane=0, prev_lane=0, flag_slow=0;
 	changed_lane=false;
-	p_lambda=LANE_CHANGE_PROB;
+	p_lambda=0;
 }
 
 void vehicle::mark(road_arr& road, short marker) {
@@ -57,18 +57,19 @@ void vehicle::distance(road_arr& road){
 
 void vehicle::random_slow(void){
 	double random = gsl_rng_uniform(generator);
-	if (random < SLOWDOWN && vel > 0) {vel -= 1; flag_slow=1;}
+	if ( (random < SLOWDOWN) && (vel > 0) ) {vel -= 1; flag_slow=1;}
 	else flag_slow=0;
 }
 
-void vehicle::move(road_arr& road, short dpos=0, short dlane=0){
+void vehicle::move(road_arr& road, short dpos, short dlane, bool periodic){
 	int roadlength=road[0].size();
 	remove(road);
 	pos = pos + dpos;
 	lane = lane + dlane;
-	if (pos >= roadlength) {
+	if ((pos >= roadlength) && periodic) {
 		pos = pos%roadlength;
 	}
+	if (!periodic && pos >= roadlength) pos = roadlength-1;
 	place(road);
 }
 
@@ -86,10 +87,10 @@ vector<int> vehicle::headway(road_arr& road){
 	vector<int> headwaycount(size, 0);
 	s = 0;
 	for (int _lane = lane - width; s < size; _lane++){
-		if (_lane >= 0 && _lane < lanes){
+		if ( (_lane >= 0) && (_lane < lanes) ){
 			_pos = pos + 1;
 			count = 0;
-			while (road[_lane][_pos%roadlength] == 0 && count < V_MAX){
+			while ( (road[_lane][_pos%roadlength] == 0) && (count < V_MAX) ){
 				_pos += 1;
 				count += 1;
 			}
@@ -114,15 +115,15 @@ int vehicle::aveheadway(vector<int>& headwaycount){
 
 bool vehicle::check_lane(road_arr& road, int direction){
 	int roadlength=road[0].size(), lanes=road.size();
-	if ((lane == 0 && direction == LEFT) || (lane == lanes - width && direction == RIGHT)) return false;
+	if (( (lane == 0) && (direction == LEFT) ) || ( (lane == lanes - width) && (direction == RIGHT) )) return false;
 	for (int _pos = pos - length + 1; _pos < pos + vel + 1; _pos++){
-		if (direction == LEFT && road[lane + direction][_pos%roadlength] != 0) return false;
-		if (direction == RIGHT && road[lane + width][_pos%roadlength] != 0) return false;
+		if ( (direction == LEFT) && (road[lane + direction][_pos%roadlength] != 0) ) return false;
+		if ( (direction == RIGHT) && (road[lane + width][_pos%roadlength] != 0) )  return false;
 	}
 	return true;
 }
 
-void vehicle::change_lane(road_arr& road){
+void vehicle::change_lane(road_arr& road, int num_virt_lanes){
 	vector<int> headcount;
 	int center, _where;
 	double probability;
@@ -132,31 +133,29 @@ void vehicle::change_lane(road_arr& road){
 	distance(road);
 	probability = gsl_rng_uniform(generator);
     if (probability <= p_lambda){
-	    if ( (lane == (road.size() - width)) && (vel > 2) && VIRTUAL_LANES ){
-		    if ( check_lane(road, LEFT) ){
-				move(road, 0, LEFT);
-			    prev_lane = lane;
-			    changed_lane = true;
-		    }
-	    }
-	    else if ( (_distance <= vel) && (vel < V_MAX) ){
+	    // if ( (lane == (road.size() - width)) && (vel > 2) && num_virt_lanes ){
+		//     if ( check_lane(road, LEFT) ){
+		// 		move(road, 0, LEFT);
+		// 	    changed_lane = true;
+		//     }
+	    // }
+	    // else 
+		if ( (_distance <= vel) && (vel < V_MAX) ){
 		    if ( (_where < center) && check_lane(road, LEFT) ){
 				move(road, 0, LEFT);
-			    prev_lane = lane;
 			    changed_lane = true;
 		    }
 		    else if ( (_where > center) && check_lane(road, RIGHT) ){
 				move(road, 0, RIGHT);
-			    prev_lane = lane;
 			    changed_lane = true;
 		    }
 		    else changed_lane = false;
 	    }
     }
     else {
-	    prev_lane = lane;
 	    changed_lane = false;
     }
+	prev_lane = lane;
 }
 
 vector<short> vehicle::stats(void){

@@ -12,6 +12,10 @@ OBJS = traffic_simulation.o vehicles.o parameters.o hdf_save.o simulation.o road
 OBJS2 = traffic_animation.o vehicles.o parameters.o hdf_save.o simulation.o road.o
 
 all: $(SIMULATION) $(ANIMATION)
+
+py: pytraffic.pyx
+	python setup.py build_ext --inplace
+
 $(SIMULATION): $(OBJS)
 	$(CPP) -std=c++11 $(LFLAGS) $(OBJS) -o $(SIMULATION) $(LIBS)
 
