@@ -38,6 +38,7 @@ private:
 
 public:
 	Vehicle();
+	~Vehicle();
 	void place(road_arr& road);
 	void remove(road_arr& road);
 	void accelerate(void);

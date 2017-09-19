@@ -14,7 +14,7 @@ public:
 	road_arr road;
 	vector<Vehicle> vehicle_array;
 	vector<int> throughput;
-	vector<vector<vector<short> > > vehicle_data;
+	vector<vector<vector<int> > > vehicle_data;
 	int number_vehicles;
 	Road *RoadModel;
 

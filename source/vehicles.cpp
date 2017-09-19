@@ -16,9 +16,13 @@ Vehicle::Vehicle() {
 	p_lambda=0;
 }
 
+Vehicle::~Vehicle(){
+}
+
 void Vehicle::mark(road_arr& road, short marker) {
 	int _lengthcount = 0, roadlength=road[0].size();
-	for (int _pos = (pos - length + 1)%roadlength; _lengthcount < length; _pos++){
+	// note that the roadlength term in _pos ensures _pos>=0
+	for (int _pos = (pos - length + roadlength + 1)%roadlength; _lengthcount < length; _pos++){
         _lengthcount++;
 		for (int _lane = lane; _lane < lane + width; _lane++){
 			road[_lane][_pos%roadlength] += marker;
@@ -33,6 +37,8 @@ void Vehicle::place(road_arr& road){
 void Vehicle::remove(road_arr& road){
 	mark(road, -marker);
 }
+
+
 
 void Vehicle::accelerate(void) {
 	if (vel < V_MAX) vel += 1;
@@ -66,10 +72,10 @@ void Vehicle::move(road_arr& road, short dpos, short dlane, bool periodic){
 	remove(road);
 	pos = pos + dpos;
 	lane = lane + dlane;
-	if ((pos >= roadlength) && periodic) {
-		pos = pos%roadlength;
+	if (pos >= roadlength) {
+		if (periodic) pos = pos%roadlength;
 	}
-	if (!periodic && pos >= roadlength) pos = roadlength-1;
+	// if (!periodic && (pos >= roadlength)) pos = roadlength-1;
 	place(road);
 }
 

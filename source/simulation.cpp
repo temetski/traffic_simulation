@@ -9,16 +9,15 @@ void Simulation::evolve(float density, float car_ratio){
     RoadModel = new Road(ROADLENGTH, LANES, true);
     RoadModel->initialize_periodic(density, car_ratio, LANE_CHANGE_PROB);
     for (int t = 0; t < TIMESTEPS; t++){
-        vector<vector<short> > vehicle_stats;
+        vector<vector<int> > vehicle_stats;
         RoadModel->timestep(t);
-        RoadModel->print_road();
         /* Eliminate the transient 2000 steps */
         if (t >= TIMESTEPS-DATAPOINTS){
 			for (Vehicle vehicle : RoadModel->vehicle_array) {
-				vehicle_stats.push_back(vehicle.stats());
+				vehicle_stats.push_back(vehicle.stats(t));
 			}
             vehicle_data.push_back(vehicle_stats);
-            vector<vector<short> >().swap(vehicle_stats);
+            vector<vector<int> >().swap(vehicle_stats);
         }
     }
 }
@@ -102,7 +101,7 @@ void BZIP(char* _filename){
 string start(float density, float car_ratio, time_t seed){
 	gsl_rng_set(generator, seed);
 	time_t start = clock();
-	vector<vector<vector<short> > > DATA;
+	vector<vector<vector<int> > > DATA;
 	char _filename[30];
 	sprintf(_filename, "CarRatio.%.2f_Density.%.2f.h5", car_ratio, density);
 	for (int trial = 1; trial < TRIALS + 1; trial++){
@@ -120,7 +119,7 @@ string start(float density, float car_ratio, time_t seed){
 
 void animate(float density, float car_ratio, time_t seed){
 	gsl_rng_set(generator, seed);
-	vector<vector<vector<short> > > POS_DATA;
+	vector<vector<vector<int> > > POS_DATA;
 	char _filename[30];
 	sprintf(_filename, "Animation_CR.%.2f_D.%.2f.h5", car_ratio, density);
 	Simulation *traffic = new Simulation;

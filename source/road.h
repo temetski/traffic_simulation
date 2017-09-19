@@ -27,9 +27,10 @@ public:
     int roadlength;
 	int lanes;
 	int real_lanes;
+	int transient;
 	vector<Vehicle> vehicle_array;
 	vector<vector<int>> vehicle_stats;
-	float density;
+	double density;
 
 private:
 	int periodic;
@@ -37,7 +38,8 @@ private:
 
 public:
 	Road();
-    Road(int len_road, int num_lanes, int num_virt_lanes=0, bool is_periodic=true);
+	Road(int len_road, int num_lanes, int num_virt_lanes=0, int trans_time=100, bool is_periodic=true);
+	~Road();
 	void timestep(int t);
 	void print_road();
 	void initialize_periodic(float density, float car_ratio, float p_lambda);

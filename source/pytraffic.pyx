@@ -37,9 +37,9 @@ cdef extern from "vehicles.h":
 cdef extern from "road.h":
     cdef cppclass Road:
         Road() except +
-        Road(int len_road, int num_lanes, int num_virt_lanes, bool is_periodic) except +
+        Road(int len_road, int num_lanes, int num_virt_lanes, int trans_time, bool is_periodic) except +
         int lanes, real_lanes
-        float density
+        double density
         road_arr road;
         vector[vector[int]] vehicle_stats
         void timestep(int t);
@@ -61,7 +61,8 @@ cdef class PyRoad:
     def __cinit__(self, **kwargs):
         self.len_road = kwargs["len_road"]
         self.lanes =  kwargs["num_lanes"] + kwargs["num_virt_lanes"]
-        self.cRoad = Road(kwargs["len_road"], kwargs["num_lanes"], kwargs["num_virt_lanes"], kwargs["is_periodic"])
+        self.cRoad = Road(kwargs["len_road"], kwargs["num_lanes"], kwargs["num_virt_lanes"], 
+                          kwargs["transient"], kwargs["is_periodic"])
         self.id_tracker = 0
 
     @property
@@ -71,6 +72,10 @@ cdef class PyRoad:
     @property
     def density(self):
         return self.cRoad.density
+
+    @property
+    def vehicle_stats(self):
+        return self.cRoad.vehicle_stats
 
     def layby_init(self, **kwargs):
         length = self.len_road
@@ -91,32 +96,32 @@ cdef class PyRoad:
 
     def run(self, **kwargs):
         cdef int t
-        for t in range(kwargs["timesteps"]):
+        for t in range(kwargs["timesteps"] + kwargs["transient"]):
             self.cRoad.timestep(t)
             # self.cRoad.print_road()
 
-    def timestep(self, **kwargs):
-        self.layby_init()
-        self.initialize_layby(**kwargs)
-        cdef int t, i, lanes, real_lanes
-        lanes, real_lanes =  self.cRoad.lanes, self.cRoad.real_lanes
-        vehicle_array = self.cRoad.vehicle_array
-        for t in range(kwargs["timesteps"]):
-            self.cRoad.print_road()
-            permutation = np.random.permutation(vehicle_array.size())
-            for i in permutation:
-                vehicle_array[i].accelerate();
-                if (vehicle_array[i].p_lambda > 0):
-                    vehicle_array[i].change_lane(self.cRoad.road, lanes-real_lanes);
-                    vehicle_array[i].decelerate(self.cRoad.road);
-                    if (not vehicle_array[i].changed_lane): 
-                        vehicle_array[i].random_slow();
-                    else: 
-                        vehicle_array[i].flag_slow = 0;
-                else:
-                    vehicle_array[i].decelerate(self.cRoad.road);
-                    vehicle_array[i].random_slow();
-                vehicle_array[i].move(self.cRoad.road, vehicle_array[i].vel, 0, kwargs["is_periodic"]);
+    # def timestep(self, **kwargs):
+    #     self.layby_init()
+    #     self.initialize_layby(**kwargs)
+    #     cdef int t, i, lanes, real_lanes
+    #     lanes, real_lanes =  self.cRoad.lanes, self.cRoad.real_lanes
+    #     vehicle_array = self.cRoad.vehicle_array
+    #     for t in range(kwargs["timesteps"] + kwargs["transient"]):
+    #         self.cRoad.print_road()
+    #         permutation = np.random.permutation(vehicle_array.size())
+    #         for i in permutation:
+    #             vehicle_array[i].accelerate();
+    #             if (vehicle_array[i].p_lambda > 0):
+    #                 vehicle_array[i].change_lane(self.cRoad.road, lanes-real_lanes);
+    #                 vehicle_array[i].decelerate(self.cRoad.road);
+    #                 if (not vehicle_array[i].changed_lane): 
+    #                     vehicle_array[i].random_slow();
+    #                 else: 
+    #                     vehicle_array[i].flag_slow = 0;
+    #             else:
+    #                 vehicle_array[i].decelerate(self.cRoad.road);
+    #                 vehicle_array[i].random_slow();
+    #             vehicle_array[i].move(self.cRoad.road, vehicle_array[i].vel, 0, kwargs["is_periodic"]);
 
     def initialize_layby(self, **kwargs):
         cdef int roadlength = kwargs["len_road"];
@@ -128,7 +133,7 @@ cdef class PyRoad:
         cdef float motor_ratio = 1 - car_ratio;
         cdef int number_vehicles = density*roadlength*real_lanes / (Car().size*car_ratio + Motorcycle().size*motor_ratio);
         cdef int number_car = car_ratio*number_vehicles;
-        cdef int number_motorcycle;
+        cdef int number_motorcycle = 0;
         if (car_ratio > 0):
             number_car = self.place_vehicle_type("Car", number_car, p_lambda);
 
@@ -138,14 +143,14 @@ cdef class PyRoad:
         size_car = number_car*Car().size
         size_moto = number_motorcycle*Motorcycle().size
         self.cRoad.density = float(size_car+size_moto)/(roadlength*real_lanes)
-        print(number_motorcycle)
+
     cdef Vehicle make(self, veh_str):
         if veh_str=="Car":
             return Car()
         elif veh_str=="Motorcycle":
             return Motorcycle()
 
-    cpdef int place_vehicle_type(self, veh_str, number, p_lambda):
+    cpdef int place_vehicle_type(self, char* veh_str, int number, float p_lambda):
         cdef Vehicle vehicle;
         vehicle = self.make(veh_str);
         cdef int pos, lane, counter, iterations;
@@ -166,8 +171,7 @@ cdef class PyRoad:
                 lane = lane_choice[np.random.randint(lane_choice.size())];
                 if (iterations > 500): break;
                 iterations += 1;
-            vehicle = self.make(veh_str)
-            vehicle_array.push_back(vehicle);
+            vehicle_array.push_back(self.make(veh_str));
             vehicle_array.back().p_lambda = p_lambda;
             vehicle_array.back().pos = pos;
             vehicle_array.back().lane = lane;

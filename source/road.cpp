@@ -11,20 +11,26 @@
 Road::Road(){
 };
 
-Road::Road(int len_road, int num_lanes, int num_virt_lanes, bool is_periodic){
+Road::Road(int len_road, int num_lanes, int num_virt_lanes, int trans_time, bool is_periodic){
 	periodic = is_periodic;
 	roadlength = len_road;
 	lanes = num_lanes + num_virt_lanes;
 	real_lanes = num_lanes;
 	id_tracker = 0;
+	transient = trans_time;
     for (int i=0; i < lanes; i++) this->road.push_back(vector<int>(roadlength,0));
 };
+
+Road::~Road(){
+	vector<Vehicle>().swap(vehicle_array);
+	vector<vector<int>>().swap(vehicle_stats);
+}
 
 void Road::timestep(int t){
     vector<int> permutation(vehicle_array.size());
 	vector<int> to_remove;
     for (unsigned i = 0; i < permutation.size(); i++) permutation[i] = i;
-    random_shuffle(vehicle_array.begin(), vehicle_array.end());
+	random_shuffle(vehicle_array.begin(), vehicle_array.end());
 	for (int i : permutation){
 		vehicle_array[i].accelerate();
 		if (vehicle_array[i].p_lambda > 0){
@@ -38,11 +44,12 @@ void Road::timestep(int t){
 			vehicle_array[i].random_slow();
 		}
 		vehicle_array[i].move(road, vehicle_array[i].vel, 0, periodic);
+
 		// if (!periodic) {
 		// 	vehicle_array[i].remove(road);
 		// 	to_remove.push_back(i);
 		// }
-		vehicle_stats.push_back(vehicle_array[i].stats(t));
+		if ((t-transient) >= 0) vehicle_stats.push_back(vehicle_array[i].stats(t-transient));
 	}
 	// return vehicle_stats;
 }
@@ -77,7 +84,7 @@ void Road::initialize_periodic(float density, float car_ratio, float p_lambda){
         number_motorcycle = number_vehicles - vehicle_array.size();
 		number_motorcycle = place_vehicle_type((*make<Motorcycle>), number_motorcycle, p_lambda);
     }
-	density = (number_motorcycle*Motorcycle().size+number_car*Car().size)/(roadlength*real_lanes);
+	this->density = double(number_motorcycle*Motorcycle().size+number_car*Car().size)/(roadlength*real_lanes);
     /* Cleanup Operations */
 
     // if (FRACTION_LANECHANGE<1.0){
