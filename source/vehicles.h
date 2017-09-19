@@ -20,9 +20,9 @@ extern time_t seed;
 
 typedef vector<vector<int> > road_arr;
 
-class vehicle {
+class Vehicle {
 public:
-	short pos, lane, prev_lane, vel, flag_slow;
+	short pos, lane, prev_lane, vel, flag_slow, id;
 	short width, length, marker, size;
 	bool changed_lane;
 	double chance_right, p_lambda;
@@ -35,8 +35,9 @@ private:
 	bool check_lane(road_arr& road, int direction);
 	void mark(road_arr& road, short marker);
 
+
 public:
-	vehicle();
+	Vehicle();
 	void place(road_arr& road);
 	void remove(road_arr& road);
 	void accelerate(void);
@@ -44,17 +45,17 @@ public:
 	void random_slow(void);
 	void move(road_arr& road, short dpos=0, short dlane=0, bool periodic=true);
 	void change_lane(road_arr& road, int num_virt_lanes=0);
-	vector<short> stats(void);
+	vector<int> stats(int time);
 };
 
-class car : public vehicle{
+class Car : public Vehicle{
 public:
-	car() { marker = 2, width = 2, length = 2, size = 4; }
+	Car() { marker = 2, width = 2, length = 2, size = 4; }
 };
 
-class motorcycle : public vehicle{
+class Motorcycle : public Vehicle{
 public:
-	motorcycle() { marker = 1, width = 1, length = 1, size = 1; }
+	Motorcycle() { marker = 1, width = 1, length = 1, size = 1; }
 };
 
 bool place_check(int pos, int lane, int length, int width,

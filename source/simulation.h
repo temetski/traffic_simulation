@@ -12,7 +12,7 @@
 struct Simulation{
 public:
 	road_arr road;
-	vector<vehicle> vehicle_array;
+	vector<Vehicle> vehicle_array;
 	vector<int> throughput;
 	vector<vector<vector<short> > > vehicle_data;
 	int number_vehicles;

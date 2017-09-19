@@ -10,11 +10,11 @@ void Simulation::evolve(float density, float car_ratio){
     RoadModel->initialize_periodic(density, car_ratio, LANE_CHANGE_PROB);
     for (int t = 0; t < TIMESTEPS; t++){
         vector<vector<short> > vehicle_stats;
-        RoadModel->timestep();
+        RoadModel->timestep(t);
         RoadModel->print_road();
         /* Eliminate the transient 2000 steps */
         if (t >= TIMESTEPS-DATAPOINTS){
-			for (vehicle vehicle : RoadModel->vehicle_array) {
+			for (Vehicle vehicle : RoadModel->vehicle_array) {
 				vehicle_stats.push_back(vehicle.stats());
 			}
             vehicle_data.push_back(vehicle_stats);
@@ -28,27 +28,27 @@ void Simulation::initialize(float density, float car_ratio){
     int pos, lane, counter;
     float motor_ratio = 1 - car_ratio;
     number_vehicles = density*ROADLENGTH*(REAL_LANES) /
-        (car().size*car_ratio + motorcycle().size*motor_ratio);
+        (Car().size*car_ratio + Motorcycle().size*motor_ratio);
     int number_car = car_ratio*number_vehicles;
     int number_motorcycle;
     RoadModel = new Road(ROADLENGTH, LANES);
-    vector<vehicle> car_array;
+    vector<Vehicle> car_array;
     /* Initializes Cars */
     if (car_ratio > 0){
-        vector<int> lane_choice(LANES / car().width);
+        vector<int> lane_choice(LANES / Car().width);
         for (unsigned i = 0; i < lane_choice.size(); i++) lane_choice[i] = i * 2;
         for (counter = 0; counter < number_car; counter++){
             int iterations = 0;
             pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
 			if (lane_choice.size() >= 2) lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
 			else lane = lane_choice[0];
-            while (!place_check(pos, lane, car().length, car().width, RoadModel->road, ROADLENGTH)){
+            while (!place_check(pos, lane, Car().length, Car().width, RoadModel->road, ROADLENGTH)){
 				pos = gsl_rng_uniform_int(generator, ROADLENGTH / 2) * 2 + 1;
                 lane = lane_choice[gsl_rng_uniform_int(generator, lane_choice.size())];
                 if (iterations > 500) break;
                 iterations += 1;
             }
-            car_array.push_back(car());
+            car_array.push_back(Car());
             car_array.back().pos = pos;
             car_array.back().lane = lane;
             car_array.back().vel = gsl_rng_uniform_int(generator, V_MAX + 1);
@@ -61,18 +61,18 @@ void Simulation::initialize(float density, float car_ratio){
         for (counter = 0; counter < number_motorcycle; counter++){
             pos = 0;
             lane = 0;
-            while (!place_check(pos, lane, motorcycle().length, motorcycle().width, RoadModel->road, ROADLENGTH)){
+            while (!place_check(pos, lane, Motorcycle().length, Motorcycle().width, RoadModel->road, ROADLENGTH)){
                 pos = gsl_rng_uniform_int(generator, ROADLENGTH);
                 lane = gsl_rng_uniform_int(generator, REAL_LANES);
             }
-            car_array.push_back(motorcycle());
+            car_array.push_back(Motorcycle());
             car_array.back().pos = pos;
             car_array.back().lane = lane;
             car_array.back().vel = gsl_rng_uniform_int(generator, V_MAX + 1);
             car_array.back().place(RoadModel->road);
         }
     }
-    else vector<vehicle> moto_array(0);
+    else vector<Vehicle> moto_array(0);
     /* Cleanup Operations */
 
     RoadModel->vehicle_array.swap(car_array);

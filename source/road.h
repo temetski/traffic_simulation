@@ -27,18 +27,21 @@ public:
     int roadlength;
 	int lanes;
 	int real_lanes;
-	vector<vehicle> vehicle_array;
+	vector<Vehicle> vehicle_array;
+	vector<vector<int>> vehicle_stats;
+	float density;
 
 private:
 	int periodic;
+	int id_tracker;
 
 public:
 	Road();
     Road(int len_road, int num_lanes, int num_virt_lanes=0, bool is_periodic=true);
-	void timestep(void);
+	void timestep(int t);
 	void print_road();
 	void initialize_periodic(float density, float car_ratio, float p_lambda);
-	void place_vehicle_type(vehicle* (*veh_type)(), int number, float p_lambda);
+	int place_vehicle_type(Vehicle* (*veh_type)(), int number, float p_lambda);
 };
 
 #endif

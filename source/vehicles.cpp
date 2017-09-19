@@ -10,13 +10,13 @@
 gsl_rng * generator = gsl_rng_alloc(gsl_rng_mt19937);
 time_t seed = time(NULL) * 123456789;
 
-vehicle::vehicle() {
+Vehicle::Vehicle() {
 	pos=0, lane=0, prev_lane=0, flag_slow=0;
 	changed_lane=false;
 	p_lambda=0;
 }
 
-void vehicle::mark(road_arr& road, short marker) {
+void Vehicle::mark(road_arr& road, short marker) {
 	int _lengthcount = 0, roadlength=road[0].size();
 	for (int _pos = (pos - length + 1)%roadlength; _lengthcount < length; _pos++){
         _lengthcount++;
@@ -26,24 +26,24 @@ void vehicle::mark(road_arr& road, short marker) {
 	}
 }
 
-void vehicle::place(road_arr& road){
+void Vehicle::place(road_arr& road){
 	mark(road, marker);
 }
 
-void vehicle::remove(road_arr& road){
+void Vehicle::remove(road_arr& road){
 	mark(road, -marker);
 }
 
-void vehicle::accelerate(void) {
+void Vehicle::accelerate(void) {
 	if (vel < V_MAX) vel += 1;
 }
 
-void vehicle::decelerate(road_arr& road) {
+void Vehicle::decelerate(road_arr& road) {
 	distance(road);
 	if (_distance < vel) vel = _distance;
 }
 
-void vehicle::distance(road_arr& road){
+void Vehicle::distance(road_arr& road){
 	int count, _pos, roadlength=road[0].size();
 	_distance = V_MAX;
 	for (int _lane = lane; _lane < lane + width; _lane++){
@@ -55,13 +55,13 @@ void vehicle::distance(road_arr& road){
 	}
 }
 
-void vehicle::random_slow(void){
+void Vehicle::random_slow(void){
 	double random = gsl_rng_uniform(generator);
 	if ( (random < SLOWDOWN) && (vel > 0) ) {vel -= 1; flag_slow=1;}
 	else flag_slow=0;
 }
 
-void vehicle::move(road_arr& road, short dpos, short dlane, bool periodic){
+void Vehicle::move(road_arr& road, short dpos, short dlane, bool periodic){
 	int roadlength=road[0].size();
 	remove(road);
 	pos = pos + dpos;
@@ -73,7 +73,7 @@ void vehicle::move(road_arr& road, short dpos, short dlane, bool periodic){
 	place(road);
 }
 
-vector<int> vehicle::headway(road_arr& road){
+vector<int> Vehicle::headway(road_arr& road){
 	/*
 	Counts the headway of the vehicle at its sides and in front.
 
@@ -101,7 +101,7 @@ vector<int> vehicle::headway(road_arr& road){
 	return headwaycount;
 }
 
-int vehicle::aveheadway(vector<int>& headwaycount){
+int Vehicle::aveheadway(vector<int>& headwaycount){
 	int center;// = (headwaycount.size() - 1) / 2;
 	if (width > 1){
 		for (unsigned i = 0; i < headwaycount.size() - 1; i++){
@@ -113,7 +113,7 @@ int vehicle::aveheadway(vector<int>& headwaycount){
 	return center;
 }
 
-bool vehicle::check_lane(road_arr& road, int direction){
+bool Vehicle::check_lane(road_arr& road, int direction){
 	int roadlength=road[0].size(), lanes=road.size();
 	if (( (lane == 0) && (direction == LEFT) ) || ( (lane == lanes - width) && (direction == RIGHT) )) return false;
 	for (int _pos = pos - length + 1; _pos < pos + vel + 1; _pos++){
@@ -123,7 +123,7 @@ bool vehicle::check_lane(road_arr& road, int direction){
 	return true;
 }
 
-void vehicle::change_lane(road_arr& road, int num_virt_lanes){
+void Vehicle::change_lane(road_arr& road, int num_virt_lanes){
 	vector<int> headcount;
 	int center, _where;
 	double probability;
@@ -158,9 +158,9 @@ void vehicle::change_lane(road_arr& road, int num_virt_lanes){
 	prev_lane = lane;
 }
 
-vector<short> vehicle::stats(void){
-	vector<short> arr;
-	arr = { pos, lane, vel, size, flag_slow };
+vector<int> Vehicle::stats(int time){
+	vector<int> arr;
+	arr = { time, id, pos, lane, vel, size, flag_slow };
 	return arr;
 }
 
