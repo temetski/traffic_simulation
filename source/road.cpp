@@ -49,7 +49,7 @@ void Road::timestep(int t){
 		// 	vehicle_array[i].remove(road);
 		// 	to_remove.push_back(i);
 		// }
-		if ((t-transient) >= 0) vehicle_stats.push_back(vehicle_array[i].stats(t-transient));
+		if (t >= 0) vehicle_stats.push_back(vehicle_array[i].stats(t));
 	}
 	// return vehicle_stats;
 }

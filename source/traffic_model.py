@@ -1,9 +1,12 @@
 from pytraffic import PyRoad
 import numpy as np
 import os
+import itertools
+from functools import partial
+from multiprocessing import Pool
 
 trials = 50
-parameters = {
+base_parameters = {
     "num_lanes": 4,
     "len_road": 50,
     "density": 0.1,
@@ -11,25 +14,44 @@ parameters = {
     "is_periodic": True,
     "timesteps": 1000,
     "p_lambda": 1,
-    "num_virt_lanes": 0,
+    "num_virt_lanes": 1,
     "transient": 100,
+    "layby_transient": 100,
+    "trials": 50
 }
 
-def run_model(density):
-    parameters["density"] = density
-    RoadModel = PyRoad(**parameters)
-    RoadModel.layby_init(**parameters)
-    RoadModel.initialize_layby(**parameters)
-    RoadModel.run(**parameters)
-    density = RoadModel.density
-    return RoadModel.vehicle_stats
-    
-def simulation(folder):
-    os.chdir(folder)
+def run_trials(density, **kwargs):
+    kwargs["density"] = density
+    trials = kwargs["trials"]
+    print("running simulation for rho=%.2f" % density)
     stats = []
-    for density in np.arange(0.05, 1, 0.05):
-        print("running simulation for rho=%.2f" % density)
-        stats = [run_model(density) for i in range(trials)]
-        np.savez("CarRatio.%.2f.Density.%.2f" % (parameters["car_ratio"], density), stats)
+    actual_densities = []
+    for i in range(trials):
+        actual_density, data = run_model(**kwargs)
+        stats.append(data)
+        actual_densities.append(actual_density)
+    density = np.mean(actual_densities)
+    np.savez("CarRatio.%.2f.Density.%.2f" % (kwargs["car_ratio"], density), stats)
 
-simulation("../layby_control")
+def run_model(**kwargs):
+    RoadModel = PyRoad(**kwargs)
+    RoadModel.initialize_layby(**kwargs)
+    RoadModel.run(**kwargs)
+    density = RoadModel.density
+    return density, RoadModel.vehicle_stats
+    
+def simulation(virt, tau):
+    parameters = base_parameters
+    parameters.update({"num_virt_lanes": virt, "layby_transient": tau})
+    base_folder_name = "virt_lanes.%d.tau.%d"
+    folder = base_folder_name % (virt, tau)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    os.chdir(folder)
+    densities = np.arange(0.05, 1, 0.05)
+    with Pool(2) as p:
+        p.map(partial(run_trials, **parameters), densities)
+    
+
+if __name__=="__main__":
+    simulation(0, 0)

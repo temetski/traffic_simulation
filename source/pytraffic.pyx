@@ -77,53 +77,33 @@ cdef class PyRoad:
     def vehicle_stats(self):
         return self.cRoad.vehicle_stats
 
+    def run(self, **kwargs):
+        cdef int t
+        for t in range(-kwargs["transient"], kwargs["timesteps"]):
+            self.cRoad.timestep(t)
+            if t==kwargs["layby_transient"]:
+                self.cRoad.vehicle_array.push_back(self.standby_array.back())
+
     def layby_init(self, **kwargs):
         length = self.len_road
         virt_lane = [9]*length
         virt_lane[length//2-1:length//2+1] = [0]*2
-        self.cRoad.road.push_back(virt_lane)
-        self.cRoad.lanes += 1
-        self.vehicle = Car()
-        self.standby_array.push_back(self.vehicle)
-        self.standby_array.back().p_lambda = kwargs["p_lambda"];
-        self.standby_array.back().pos = length//2;
-        self.standby_array.back().lane = self.cRoad.lanes-2;
-        self.standby_array.back().vel = 0;
-        self.standby_array.back().place(self.cRoad.road);
-        self.standby_array.back().id = self.id_tracker
-        self.id_tracker += 1
-
-
-    def run(self, **kwargs):
-        cdef int t
-        for t in range(kwargs["timesteps"] + kwargs["transient"]):
-            self.cRoad.timestep(t)
-            # self.cRoad.print_road()
-
-    # def timestep(self, **kwargs):
-    #     self.layby_init()
-    #     self.initialize_layby(**kwargs)
-    #     cdef int t, i, lanes, real_lanes
-    #     lanes, real_lanes =  self.cRoad.lanes, self.cRoad.real_lanes
-    #     vehicle_array = self.cRoad.vehicle_array
-    #     for t in range(kwargs["timesteps"] + kwargs["transient"]):
-    #         self.cRoad.print_road()
-    #         permutation = np.random.permutation(vehicle_array.size())
-    #         for i in permutation:
-    #             vehicle_array[i].accelerate();
-    #             if (vehicle_array[i].p_lambda > 0):
-    #                 vehicle_array[i].change_lane(self.cRoad.road, lanes-real_lanes);
-    #                 vehicle_array[i].decelerate(self.cRoad.road);
-    #                 if (not vehicle_array[i].changed_lane): 
-    #                     vehicle_array[i].random_slow();
-    #                 else: 
-    #                     vehicle_array[i].flag_slow = 0;
-    #             else:
-    #                 vehicle_array[i].decelerate(self.cRoad.road);
-    #                 vehicle_array[i].random_slow();
-    #             vehicle_array[i].move(self.cRoad.road, vehicle_array[i].vel, 0, kwargs["is_periodic"]);
+        for i in range(kwargs["num_virt_lanes"]):
+            self.cRoad.road.push_back(virt_lane)
+            self.cRoad.lanes += 1
+        if kwargs["num_virt_lanes"]>0:
+            self.vehicle = Car()
+            self.standby_array.push_back(self.vehicle)
+            self.standby_array.back().p_lambda = kwargs["p_lambda"];
+            self.standby_array.back().pos = length//2;
+            self.standby_array.back().lane = self.cRoad.lanes-2;
+            self.standby_array.back().vel = 0;
+            self.standby_array.back().place(self.cRoad.road);
+            self.standby_array.back().id = self.id_tracker
+            self.id_tracker += 1
 
     def initialize_layby(self, **kwargs):
+        self.layby_init(**kwargs)
         cdef int roadlength = kwargs["len_road"];
         density = kwargs["density"]
         car_ratio = kwargs["car_ratio"]
@@ -133,9 +113,11 @@ cdef class PyRoad:
         cdef float motor_ratio = 1 - car_ratio;
         cdef int number_vehicles = density*roadlength*real_lanes / (Car().size*car_ratio + Motorcycle().size*motor_ratio);
         cdef int number_car = car_ratio*number_vehicles;
+        if kwargs["num_virt_lanes"]>0: number_car -= 1
         cdef int number_motorcycle = 0;
         if (car_ratio > 0):
             number_car = self.place_vehicle_type("Car", number_car, p_lambda);
+            if kwargs["num_virt_lanes"]>0: number_car += 1
 
         if (motor_ratio > 0):
             number_motorcycle = number_vehicles - self.cRoad.vehicle_array.size();
