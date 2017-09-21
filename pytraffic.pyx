@@ -10,7 +10,7 @@ cdef int V_MAX
 VMAX=5
 ctypedef vector[vector[int]] road_arr;
 
-cdef extern from "vehicles.h":
+cdef extern from "source/vehicles.h":
     cdef cppclass Vehicle:
         Vehicle() except +
         short pos, lane, prev_lane, vel, flag_slow, id;
@@ -34,7 +34,7 @@ cdef extern from "vehicles.h":
 
     bool place_check(int pos, int lane, int length, int width,	road_arr& road, int roadlength)
 
-cdef extern from "road.h":
+cdef extern from "source/road.h":
     cdef cppclass Road:
         Road() except +
         Road(int len_road, int num_lanes, int num_virt_lanes, int trans_time, bool is_periodic) except +
@@ -127,9 +127,9 @@ cdef class PyRoad:
         self.cRoad.density = float(size_car+size_moto)/(roadlength*real_lanes)
 
     cdef Vehicle make(self, veh_str):
-        if veh_str=="Car":
+        if veh_str==b"Car":
             return Car()
-        elif veh_str=="Motorcycle":
+        elif veh_str==b"Motorcycle":
             return Motorcycle()
 
     cpdef int place_vehicle_type(self, char* veh_str, int number, float p_lambda):

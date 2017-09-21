@@ -2,14 +2,14 @@ from pytraffic import PyRoad
 import numpy as np
 import os
 import itertools
+import json
 from functools import partial
 from multiprocessing import Pool
 
-trials = 50
 base_parameters = {
     "num_lanes": 4,
     "len_road": 50,
-    "density": 0.1,
+#    "density": 0.1,
     "car_ratio": 1,
     "is_periodic": True,
     "timesteps": 1000,
@@ -17,10 +17,12 @@ base_parameters = {
     "num_virt_lanes": 1,
     "transient": 100,
     "layby_transient": 100,
-    "trials": 50
+    "trials": 1
 }
 
 def run_trials(density, **kwargs):
+    with open("parameters.json", "w") as file:
+        json.dump(kwargs, file)
     kwargs["density"] = density
     trials = kwargs["trials"]
     print("running simulation for rho=%.2f" % density)
@@ -31,7 +33,7 @@ def run_trials(density, **kwargs):
         stats.append(data)
         actual_densities.append(actual_density)
     density = np.mean(actual_densities)
-    np.savez("CarRatio.%.2f.Density.%.2f" % (kwargs["car_ratio"], density), stats)
+    np.savez_compressed("CarRatio.%.2f.Density.%.2f" % (kwargs["car_ratio"], density), stats)
 
 def run_model(**kwargs):
     RoadModel = PyRoad(**kwargs)
@@ -54,4 +56,4 @@ def simulation(virt, tau):
     
 
 if __name__=="__main__":
-    simulation(0, 0)
+    simulation(1, 1)
