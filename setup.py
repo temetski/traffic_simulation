@@ -15,6 +15,7 @@ extra_compile_args = [
 extra_link_args = [
     "-std=c++11", ## Link C++11 code
     # "-L/usr/local/Cellar/gsl/2.3/lib",
+    "-L./source",
     "-lgsl",
     "-lgslcblas",
     "-lm"

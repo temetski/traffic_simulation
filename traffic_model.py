@@ -17,12 +17,10 @@ base_parameters = {
     "num_virt_lanes": 1,
     "transient": 100,
     "layby_transient": 100,
-    "trials": 1
+    "trials": 50
 }
 
 def run_trials(density, **kwargs):
-    with open("parameters.json", "w") as file:
-        json.dump(kwargs, file)
     kwargs["density"] = density
     trials = kwargs["trials"]
     print("running simulation for rho=%.2f" % density)
@@ -51,9 +49,15 @@ def simulation(virt, tau):
         os.makedirs(folder)
     os.chdir(folder)
     densities = np.arange(0.05, 1, 0.05)
+    with open("parameters.json", "w") as file:
+        json.dump(parameters, file)
     with Pool(2) as p:
         p.map(partial(run_trials, **parameters), densities)
-    
+    os.chdir("../")    
 
 if __name__=="__main__":
-    simulation(1, 1)
+    virts = [1,2]
+    taus = [100,400,700]
+    simulation(0, 0)
+    for virt, tau in itertools.product(virts, taus):
+        simulation(virt, tau)

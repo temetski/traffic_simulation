@@ -81,7 +81,7 @@ cdef class PyRoad:
         cdef int t
         for t in range(-kwargs["transient"], kwargs["timesteps"]):
             self.cRoad.timestep(t)
-            if t==kwargs["layby_transient"]:
+            if t==kwargs["layby_transient"] and kwargs["num_virt_lanes"]:
                 self.cRoad.vehicle_array.push_back(self.standby_array.back())
 
     def layby_init(self, **kwargs):
