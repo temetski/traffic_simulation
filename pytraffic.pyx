@@ -60,8 +60,8 @@ cdef class PyRoad:
 
     def __cinit__(self, **kwargs):
         self.len_road = kwargs["len_road"]
-        self.lanes =  kwargs["num_lanes"] + kwargs["num_virt_lanes"]
-        self.cRoad = Road(kwargs["len_road"], kwargs["num_lanes"], kwargs["num_virt_lanes"], 
+        self.lanes =  kwargs["num_lanes"]
+        self.cRoad = Road(kwargs["len_road"], kwargs["num_lanes"], 0, 
                           kwargs["transient"], kwargs["is_periodic"])
         self.id_tracker = 0
 
@@ -80,9 +80,10 @@ cdef class PyRoad:
     def run(self, **kwargs):
         cdef int t
         for t in range(-kwargs["transient"], kwargs["timesteps"]):
-            self.cRoad.timestep(t)
             if t==kwargs["layby_transient"] and kwargs["num_virt_lanes"]:
                 self.cRoad.vehicle_array.push_back(self.standby_array.back())
+            self.cRoad.timestep(t)
+            # self.cRoad.print_road()
 
     def layby_init(self, **kwargs):
         length = self.len_road
