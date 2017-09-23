@@ -48,10 +48,10 @@ def simulation(virt, tau):
     if not os.path.exists(folder):
         os.makedirs(folder)
     os.chdir(folder)
-    densities = np.arange(0.05, 1, 0.05)
+    densities = np.concatenate((np.arange(0.01, 0.1, 0.04), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
     with open("parameters.json", "w") as file:
         json.dump(parameters, file)
-    with Pool(2) as p:
+    with Pool(7) as p:
         p.map(partial(run_trials, **parameters), densities)
     os.chdir("../")    
 
