@@ -7,7 +7,7 @@ import os
 import numpy as np
 
 def throughput(data):
-    return np.sum(data.groupby("id")["vel"].sum().values)//parameters["len_road"]
+    return np.sum(data.groupby("id")["vel"].sum().values)#parameters["len_road"]
 
 def velocity_ave_car(data):
     return data.groupby("id")["vel"].mean().values
@@ -18,11 +18,11 @@ def velocity_ave_road(data):
 def preprocess(folder):
     os.chdir(folder)
     with open("parameters.json", "r") as file:
-            parameters = json.load(file)
+        parameters = json.load(file)
 
     files = glob.glob("CarRatio*")
     densities = [float(value) for filename in files for value in re.findall("Density\.(\d.\d{2})", filename)]
-    lolo = []
+    data = []
     num_trials = parameters["trials"]
     cols = ['timestep', 'id', 'pos', 'lane', 'vel', 'size', 'flag_slow']
     for density in densities:
@@ -39,9 +39,9 @@ def preprocess(folder):
                         "throughput": data_throughput,
                         "velocity": data_velocity_car
                         }
-        lolo.append(dict_density)
+        data.append(dict_density)
 
-    np.save('data', lolo)
+    np.save('data', data)
     os.chdir("../")
 
 if __name__=="__main__":
