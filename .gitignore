@@ -23,6 +23,12 @@ build/
 # Data
 lanechange_*/
 *.npz
+*.npy
+parameters.json
+
+#cython files
+pytraffic.*
+!pytraffic.pyx
 
 # figures
 *.pdf
