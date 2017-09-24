@@ -4,7 +4,7 @@ import os
 import itertools
 import json
 from functools import partial
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 
 base_parameters = {
     "num_lanes": 4,
@@ -41,7 +41,7 @@ def run_model(**kwargs):
     return density, RoadModel.vehicle_stats
 
 def simulation(virt, tau):
-    parameters = base_parameters
+    parameters = base_parameters.copy()
     parameters.update({"num_virt_lanes": virt, "layby_transient": tau})
     base_folder_name = "virt_lanes.%d.tau.%d"
     folder = base_folder_name % (virt, tau)
@@ -51,7 +51,7 @@ def simulation(virt, tau):
     densities = np.concatenate((np.arange(0.04, 0.1, 0.03), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
     with open("parameters.json", "w") as file:
         json.dump(parameters, file)
-    with Pool(7) as p:
+    with Pool(cpu_count()//2 or 1) as p:
         p.map(partial(run_trials, **parameters), densities)
     os.chdir("../") 
 
