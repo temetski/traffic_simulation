@@ -39,7 +39,7 @@ def run_model(**kwargs):
     RoadModel.run(**kwargs)
     density = RoadModel.density
     return density, RoadModel.vehicle_stats
-    
+
 def simulation(virt, tau):
     parameters = base_parameters
     parameters.update({"num_virt_lanes": virt, "layby_transient": tau})
@@ -48,16 +48,16 @@ def simulation(virt, tau):
     if not os.path.exists(folder):
         os.makedirs(folder)
     os.chdir(folder)
-    densities = np.concatenate((np.arange(0.01, 0.1, 0.04), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
+    densities = np.concatenate((np.arange(0.04, 0.1, 0.03), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
     with open("parameters.json", "w") as file:
         json.dump(parameters, file)
     with Pool(7) as p:
         p.map(partial(run_trials, **parameters), densities)
-    os.chdir("../")    
+    os.chdir("../") 
 
 if __name__=="__main__":
-    virts = [1,2]
-    taus = [100,400,700]
+    virts = [1, 2]
+    taus = [100, 400, 700]
     simulation(0, 0)
     for virt, tau in itertools.product(virts, taus):
         simulation(virt, tau)
