@@ -26,7 +26,6 @@ def preprocess(folder):
     num_trials = parameters["trials"]
     cols = ['timestep', 'id', 'pos', 'lane', 'vel', 'size', 'flag_slow']
     for density in densities:
-        print(density)
         data_trials = np.load("CarRatio.1.00.Density.%.2f.npz" % density)['data']
         data_throughput = []
         data_velocity_car = []
@@ -41,7 +40,7 @@ def preprocess(folder):
                         "velocity": data_velocity_car
                         }
         data.append(dict_density)
-
+    data = sorted(data, key=lambda k: k['density']) 
     np.save('data', data)
     os.chdir("../")
 
