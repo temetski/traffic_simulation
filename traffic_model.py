@@ -6,9 +6,10 @@ import json
 from functools import partial
 from multiprocessing import Pool, cpu_count
 
+# the density resolution of this model is 0.01 for cars
 base_parameters = {
     "num_lanes": 4,
-    "len_road": 50,
+    "len_road": 100,
 #    "density": 0.1,
     "car_ratio": 1,
     "is_periodic": True,
@@ -48,12 +49,12 @@ def simulation(virt, tau):
     if not os.path.exists(folder):
         os.makedirs(folder)
     os.chdir(folder)
-    densities = np.concatenate((np.arange(0.04, 0.1, 0.03), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
+    densities = np.concatenate((np.arange(0.04, 0.09, 0.03), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
     with open("parameters.json", "w") as file:
         json.dump(parameters, file)
-    with Pool(2) as p: #cpu_count()//2 or 1) as p:
+    with Pool(cpu_count()//2 or 1) as p:
         p.map(partial(run_trials, **parameters), densities)
-    os.chdir("../") 
+    os.chdir("../")
 
 if __name__=="__main__":
     virts = [1, 2]
