@@ -31,7 +31,7 @@ def run_trials(density, **kwargs):
         stats.append(data)
         actual_densities.append(actual_density)
     density = np.mean(actual_densities)
-    np.savez_compressed("CarRatio.%.2f.Density.%.2f" % (kwargs["car_ratio"], density), stats)
+    np.savez_compressed("CarRatio.%.2f.Density.%.2f" % (kwargs["car_ratio"], density), data=stats)
 
 def run_model(**kwargs):
     RoadModel = PyRoad(**kwargs)
@@ -51,7 +51,7 @@ def simulation(virt, tau):
     densities = np.concatenate((np.arange(0.04, 0.1, 0.03), np.arange(0.1, 0.3, 0.01), np.arange(0.3, 1, 0.05)))
     with open("parameters.json", "w") as file:
         json.dump(parameters, file)
-    with Pool(cpu_count()//2 or 1) as p:
+    with Pool(2) as p: #cpu_count()//2 or 1) as p:
         p.map(partial(run_trials, **parameters), densities)
     os.chdir("../") 
 

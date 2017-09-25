@@ -26,7 +26,8 @@ def preprocess(folder):
     num_trials = parameters["trials"]
     cols = ['timestep', 'id', 'pos', 'lane', 'vel', 'size', 'flag_slow']
     for density in densities:
-        data_trials = np.load("CarRatio.1.00.Density.%.2f.npz" % density)['arr_0']
+        print(density)
+        data_trials = np.load("CarRatio.1.00.Density.%.2f.npz" % density)['data']
         data_throughput = []
         data_velocity_car = []
         for data_trial in data_trials:
