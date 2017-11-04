@@ -18,7 +18,7 @@ base_parameters = {
     "num_virt_lanes": 1,
     "transient": 100,
     "layby_transient": 100,
-    "trials": 50
+    "trials": 100
 }
 
 def run_trials(density, **kwargs):
