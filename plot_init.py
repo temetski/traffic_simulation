@@ -1,7 +1,9 @@
 from __future__ import division
 import numpy as np
+import os
 import matplotlib
-matplotlib.use("Agg")
+if os.name == 'posix' and "DISPLAY" not in os.environ:
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 rc = {'font.size':16,
@@ -10,5 +12,3 @@ rc = {'font.size':16,
       'xtick.labelsize':16,
       'ytick.labelsize':16}
 sns.set(context="paper", style="white", palette="colorblind", rc=rc)
-# sns.set(font_scale=2)
-# sns.axes_style
